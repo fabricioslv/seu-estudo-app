@@ -3,13 +3,63 @@
   "builds": [
     {
       "src": "index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "50mb",
+        "includeFiles": [
+          "db/**",
+          "services/**",
+          "middleware/**",
+          "routes/**",
+          "config/**",
+          "scripts/**"
+        ]
+      }
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "index.js",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "x-xss-protection": "1; mode=block",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "x-environment": "production"
+      }
+    },
+    {
+      "src": "/health",
+      "dest": "index.js",
+      "headers": {
+        "cache-control": "no-cache"
+      }
+    },
+    {
       "src": "/(.*)",
       "dest": "index.js"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "functions": {
+    "index.js": {
+      "maxDuration": 30
+    }
+  },
+  "regions": ["iad1"],
+  "framework": null,
+  "buildCommand": "npm ci && npm run lint",
+  "devCommand": null,
+  "installCommand": "npm ci"
 }

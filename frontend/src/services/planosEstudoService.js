@@ -1,6 +1,6 @@
 // services/planosEstudoService.js - Funções para interagir com a API de planos de estudo
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:6001/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 /**
  * Gera um plano de estudos com IA

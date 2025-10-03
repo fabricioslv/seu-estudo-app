@@ -5,9 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import { BrowserRouter } from 'react-router-dom';
-
 import { AuthProvider } from './context/AuthContext';
 
+// Inicializar PWA e funcionalidades offline
+import './services/pwaInit';
+
+// Adicionando logs de diagnóstico para identificar problemas de inicialização
+console.log('[DEBUG] Iniciando aplicação...');
+console.log('[DEBUG] BrowserRouter sendo inicializado no index.js');
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

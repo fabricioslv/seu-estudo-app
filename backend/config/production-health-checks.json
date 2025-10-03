@@ -1,0 +1,163 @@
+{
+  "healthChecks": {
+    "enabled": true,
+    "interval": 30000,
+    "timeout": 10000,
+    "retryAttempts": 3,
+    "retryDelay": 1000,
+    "endpoints": {
+      "main": "/api/health",
+      "database": "/api/health/database",
+      "external": "/api/health/external",
+      "performance": "/api/health/performance"
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "metrics": {
+      "responseTime": true,
+      "errorRate": true,
+      "throughput": true,
+      "memoryUsage": true,
+      "cpuUsage": false
+    },
+    "alerts": {
+      "responseTimeThreshold": 5000,
+      "errorRateThreshold": 0.05,
+      "memoryThreshold": 128,
+      "cpuThreshold": 80
+    }
+  },
+  "dependencies": {
+    "database": {
+      "enabled": true,
+      "connectionTimeout": 5000,
+      "queryTimeout": 10000,
+      "maxConnections": 20,
+      "minConnections": 2
+    },
+    "redis": {
+      "enabled": false,
+      "host": "localhost",
+      "port": 6379,
+      "timeout": 3000
+    },
+    "externalAPIs": {
+      "supabase": {
+        "enabled": true,
+        "baseURL": "https://your-project.supabase.co",
+        "timeout": 10000,
+        "retryAttempts": 3
+      },
+      "ollama": {
+        "enabled": true,
+        "baseURL": "https://your-ollama-instance.com",
+        "timeout": 30000,
+        "retryAttempts": 2
+      },
+      "enemAPI": {
+        "enabled": true,
+        "baseURL": "https://enem-api-endpoint.com",
+        "timeout": 15000,
+        "retryAttempts": 3,
+        "apiKey": "your-enem-api-key"
+      }
+    }
+  },
+  "security": {
+    "rateLimiting": {
+      "enabled": true,
+      "windowMs": 900000,
+      "maxRequests": 100,
+      "skipSuccessfulRequests": false,
+      "skipFailedRequests": false
+    },
+    "cors": {
+      "enabled": true,
+      "origins": [
+        "https://seu-estudo.vercel.app",
+        "https://www.seu-estudo.com"
+      ],
+      "credentials": true,
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      "allowedHeaders": ["Content-Type", "Authorization", "X-Requested-With"]
+    },
+    "helmet": {
+      "enabled": true,
+      "contentSecurityPolicy": {
+        "directives": {
+          "defaultSrc": ["'self'"],
+          "scriptSrc": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+          "styleSrc": ["'self'", "'unsafe-inline'"],
+          "imgSrc": ["'self'", "data:", "https:"],
+          "fontSrc": ["'self'", "https:"],
+          "connectSrc": ["'self'", "https:", "wss:"],
+          "frameSrc": ["'none'"],
+          "objectSrc": ["'none'"]
+        }
+      },
+      "hsts": {
+        "maxAge": 31536000,
+        "includeSubDomains": true,
+        "preload": true
+      }
+    }
+  },
+  "performance": {
+    "compression": {
+      "enabled": true,
+      "level": 6,
+      "threshold": 1024,
+      "filter": ["text/plain", "text/css", "application/json", "application/javascript", "text/xml", "application/xml", "application/xml+rss", "text/javascript"]
+    },
+    "caching": {
+      "enabled": true,
+      "maxAge": 86400,
+      "assets": {
+        "images": 2592000,
+        "css": 2592000,
+        "js": 2592000,
+        "fonts": 2592000,
+        "html": 3600
+      }
+    },
+    "optimization": {
+      "bundleSplitting": true,
+      "codeMinification": true,
+      "deadCodeElimination": true,
+      "treeShaking": true,
+      "imageOptimization": true,
+      "lazyLoading": true
+    }
+  },
+  "logging": {
+    "level": "warn",
+    "maxSize": "10m",
+    "maxFiles": "5",
+    "format": "json",
+    "includeStackTrace": false,
+    "redactSensitiveData": true,
+    "sensitiveFields": ["password", "token", "authorization", "jwt", "apiKey"]
+  },
+  "backup": {
+    "enabled": true,
+    "schedule": "0 2 * * *",
+    "retention": 30,
+    "type": "incremental",
+    "encryption": true,
+    "compression": true,
+    "destinations": [
+      {
+        "type": "s3",
+        "bucket": "seu-estudo-backups",
+        "region": "us-east-1",
+        "encryption": "AES256"
+      },
+      {
+        "type": "local",
+        "path": "/tmp/backups",
+        "encryption": true
+      }
+    ]
+  }
+}

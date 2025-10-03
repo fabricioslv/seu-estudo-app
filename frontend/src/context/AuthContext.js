@@ -12,6 +12,9 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true); // Para verificar o token inicial
+// Adicionando logs de diagnóstico para identificar problemas de contexto
+console.log('[DEBUG] AuthContext sendo inicializado...');
+console.log('[DEBUG] Estado inicial - loading:', true, 'isAuthenticated:', false);
 
   useEffect(() => {
     // Ao carregar o app, verifica se já existe um token no localStorage

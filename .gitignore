@@ -383,3 +383,4 @@ scripts/*.js
 # ✅ Documentação atualizada seja mantida
 # ✅ Arquivos temporários sejam ignorados
 # ✅ Estrutura profissional seja preservada
+.vercel

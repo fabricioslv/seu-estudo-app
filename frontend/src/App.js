@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
@@ -30,11 +30,15 @@ import TornarTutorPage from './pages/TornarTutorPage';
 import MinhasSessoesPage from './pages/MinhasSessoesPage';
 import './styles/main.css';
 
+// Adicionando logs de diagnóstico para identificar problemas de inicialização
+console.log('[DEBUG] App.js sendo inicializado...');
+console.log('[DEBUG] Router sendo inicializado no App.js');
+console.log('[DEBUG] Ambiente atual:', process.env.NODE_ENV);
+console.log('[DEBUG] Variáveis de ambiente carregadas');
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="App">
+      <div className="App">
           <Navbar />
           <main className="main-content">
             <Routes>
@@ -66,7 +70,6 @@ function App() {
           </main>
           <Footer />
         </div>
-      </Router>
     </AuthProvider>
   );
 }

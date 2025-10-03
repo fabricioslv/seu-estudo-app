@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "x-environment": "staging",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin"
+      }
+    }
+  ],
+  "env": {
+    "NODE_ENV": "staging",
+    "VERCEL_ENV": "staging"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "staging"
+    }
+  },
+  "functions": {
+    "index.js": {
+      "maxDuration": 30
+    }
+  },
+  "regions": ["iad1"],
+  "buildCommand": "npm run build:staging",
+  "devCommand": null,
+  "installCommand": "npm ci",
+  "framework": null
+}

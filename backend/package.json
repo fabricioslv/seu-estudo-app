@@ -4,10 +4,29 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
     "start": "node index.js",
+    "start:production": "NODE_ENV=production node index.js",
     "dev": "nodemon index.js",
-    "db:init": "node db/init.js"
+    "db:init": "node db/init.js",
+    "db:migrate": "node db/init.js",
+    "build": "npm run lint && npm test",
+    "build:production": "npm run lint && npm run test:coverage && npm run security:audit",
+    "build:staging": "NODE_ENV=staging npm run lint",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:audit:fix": "npm audit fix",
+    "performance:test": "node -e \"console.log('Performance test placeholder')\"",
+    "health:check": "curl -f http://localhost:3001/api/health || exit 1",
+    "clean": "rm -rf node_modules package-lock.json && npm install",
+    "docker:build": "docker build -t seu-estudo-backend .",
+    "docker:run": "docker run -p 3001:3001 seu-estudo-backend",
+    "predeploy": "npm run build:production",
+    "deploy": "vercel --prod",
+    "deploy:staging": "vercel --prod --scope=staging"
   },
   "keywords": [],
   "author": "",
@@ -26,8 +45,11 @@
     "pdf-parse": "^1.1.1",
     "pdf2json": "^3.2.2",
     "pdfjs-dist": "^5.4.149",
+    "performance-now": "^2.1.0",
     "pg": "^8.16.3",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "winston": "^3.18.3",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
@@ -35,7 +57,9 @@
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^30.2.0",
     "nodemon": "^3.1.10",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "supertest": "^7.1.4"
   }
 }

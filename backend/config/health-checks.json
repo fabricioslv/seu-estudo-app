@@ -1,0 +1,99 @@
+{
+  "healthChecks": {
+    "enabled": true,
+    "checkInterval": 30000,
+    "maxHistorySize": 100,
+    "alertThresholds": {
+      "cpu": 80,
+      "memory": 85,
+      "disk": 90,
+      "responseTime": 2000,
+      "errorRate": 0.1,
+      "database": {
+        "connectionTime": 1000,
+        "poolUsage": 80
+      }
+    }
+  },
+  "alerts": {
+    "enabled": true,
+    "cooldownPeriod": 300000,
+    "escalationDelay": 900000,
+    "maxAlertsPerHour": 10,
+    "thresholds": {
+      "cpu": {
+        "warning": 70,
+        "critical": 90
+      },
+      "memory": {
+        "warning": 80,
+        "critical": 95
+      },
+      "disk": {
+        "warning": 85,
+        "critical": 95
+      },
+      "responseTime": {
+        "warning": 2000,
+        "critical": 5000
+      },
+      "errorRate": {
+        "warning": 0.05,
+        "critical": 0.1
+      }
+    },
+    "notificationChannels": [
+      "console"
+    ],
+    "webhook": {
+      "enabled": false,
+      "url": ""
+    },
+    "email": {
+      "enabled": false,
+      "to": ""
+    }
+  },
+  "monitoring": {
+    "prometheus": {
+      "enabled": false,
+      "path": "/api/health/prometheus"
+    },
+    "retention": {
+      "metrics": "7d",
+      "alerts": "30d",
+      "history": "7d"
+    }
+  },
+  "database": {
+    "checkTables": [
+      "usuarios",
+      "questoes",
+      "livros",
+      "simulados",
+      "notas",
+      "mensagens",
+      "notificacoes",
+      "tutoria"
+    ],
+    "poolStats": {
+      "enabled": true,
+      "warningThreshold": 80,
+      "criticalThreshold": 95
+    }
+  },
+  "externalDependencies": {
+    "googleAI": {
+      "enabled": true,
+      "timeout": 5000
+    },
+    "huggingFace": {
+      "enabled": true,
+      "timeout": 5000
+    },
+    "supabase": {
+      "enabled": true,
+      "timeout": 5000
+    }
+  }
+}

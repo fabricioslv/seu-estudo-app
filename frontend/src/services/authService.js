@@ -1,7 +1,7 @@
 // services/authService.js - Funções para interagir com a API de autenticação
 
 // A URL base da nossa API backend
-const API_URL = (process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL + '/auth' : 'http://localhost:6001/api/auth');
+const API_URL = (process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL + '/auth' : 'http://localhost:5000/api/auth');
 
 /**
  * Registra um novo usuário.

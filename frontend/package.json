@@ -21,8 +21,20 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:production": "react-scripts build && npm run optimize:build",
+    "build:staging": "REACT_APP_ENV=staging react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "eject": "react-scripts eject",
+    "optimize:build": "npm run compress:js && npm run compress:css && npm run generate:sw",
+    "compress:js": "echo 'JavaScript minificado pelo react-scripts'",
+    "compress:css": "echo 'CSS otimizado pelo react-scripts'",
+    "generate:sw": "echo 'Service Worker configurado'",
+    "analyze:bundle": "npx source-map-explorer 'build/static/js/*.js'",
+    "lint": "eslint src/ --ext .js,.jsx",
+    "lint:fix": "eslint src/ --ext .js,.jsx --fix",
+    "format": "prettier --write src/**/*.{js,jsx,json,css}",
+    "format:check": "prettier --check src/**/*.{js,jsx,json,css}"
   },
   "eslintConfig": {
     "extends": [

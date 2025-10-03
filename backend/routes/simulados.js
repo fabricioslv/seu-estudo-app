@@ -85,17 +85,9 @@ router.get('/:id/questoes', requireAuth, async (req, res) => {
 
     // Iniciar uma sessão de simulado para o usuário (registrar início)
     await db.query(
-      `
-      INSERT INTO sessoes_simulado (usuario_id, simulado_id, data_inicio, status)
-      VALUES ($1, $2, $3, $4)
-      RETURNING id
-    `,
-      [
-        req.user.id,
-        id,
-        new Date(),
-        'ativo'
-      ]
+      `INSERT INTO sessoes_simulado (usuario_id, simulado_id, data_inicio, status) VALUES ($1, $2, $3, $4) RETURNING id`,
+      [req.user.id, id, new Date(), 'ativo']
+    );
 
     res.json({
       success: true,

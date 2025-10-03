@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "x-environment": "staging",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin"
+      }
+    }
+  ],
+  "env": {
+    "NODE_ENV": "staging",
+    "REACT_APP_ENV": "staging",
+    "GENERATE_SOURCEMAP": "true"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "staging",
+      "REACT_APP_ENV": "staging"
+    }
+  },
+  "regions": ["iad1"],
+  "buildCommand": "npm run build:staging",
+  "devCommand": null,
+  "installCommand": "npm ci",
+  "framework": null,
+  "outputDirectory": "build"
+}

@@ -1,25 +1,119 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "name": "Seu-Estudo - Plataforma Educacional",
+  "short_name": "Seu-Estudo",
+  "description": "Plataforma completa para estudos, simulados e acompanhamento de desempenho acadêmico",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#667eea",
+  "background_color": "#ffffff",
+  "scope": "/",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["education", "productivity", "utilities"],
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon",
+      "purpose": "any"
     },
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "screenshots": [
+    {
+      "src": "screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Iniciar Estudo",
+      "short_name": "Estudar",
+      "description": "Começar uma sessão de estudo",
+      "url": "/estudar",
+      "icons": [
+        {
+          "src": "logo192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Meus Simulados",
+      "short_name": "Simulados",
+      "description": "Ver simulados disponíveis",
+      "url": "/simulados",
+      "icons": [
+        {
+          "src": "logo192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Meu Progresso",
+      "short_name": "Dashboard",
+      "description": "Ver desempenho e progresso",
+      "url": "/dashboard",
+      "icons": [
+        {
+          "src": "logo192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "protocol_handlers": [],
+  "file_handlers": [],
+  "share_target": {
+    "action": "/compartilhar",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }

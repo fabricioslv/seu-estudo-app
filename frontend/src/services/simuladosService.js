@@ -1,6 +1,6 @@
 // services/simuladosService.js - Funções para interagir com a API de simulados
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:6001/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 /**
  * Obtém simulados disponíveis para o usuário
