@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@playwright/test": "^1.55.1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.58.0",
+    "axios": "^1.12.2"
+  }
+}

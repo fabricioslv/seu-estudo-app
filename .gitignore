@@ -1,0 +1,385 @@
+# 📁 Seu Estudo - Arquivo .gitignore Profissional
+
+# ===============================================
+# 🔐 DADOS SENSÍVEIS E SEGURANÇA
+# ===============================================
+
+# Variáveis de ambiente e configurações sensíveis
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env.backup
+
+# Chaves de API e tokens
+*.key
+*.pem
+*.crt
+*.p12
+secrets.json
+config/secrets.json
+
+# Arquivos de log com dados sensíveis
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Backups de banco de dados
+*.sql
+*.dump
+*.backup
+
+# ===============================================
+# 📂 PASTAS DE DADOS LOCAIS
+# ===============================================
+
+# Biblioteca de livros didáticos (NÃO subir PDFs para repositório)
+Livros didáticos/
+Provas e gabaritos/
+dados-locais/
+content-library/
+books-collection/
+
+# Arquivos temporários de processamento
+temp/
+tmp/
+temp_analysis/
+*.temp
+*.tmp
+
+# Cache e dados temporários
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.output/
+.vercel/
+.netlify/
+
+# ===============================================
+# 🛠️ ARQUIVOS DE DESENVOLVIMENTO
+# ===============================================
+
+# Arquivos de teste antigos e desatualizados
+test-results/
+playwright-report/
+coverage/
+.nyc_output/
+
+# Arquivos de build local
+dist/
+build/
+out/
+
+# Arquivos de configuração local
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Arquivos do sistema operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ===============================================
+# 📦 DEPENDÊNCIAS E NODE_MODULES
+# ===============================================
+
+# Node modules (sempre ignorar)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos de lock (opcional, dependendo da estratégia)
+# package-lock.json
+# yarn.lock
+
+# ===============================================
+# 🔧 ARQUIVOS DE CONFIGURAÇÃO ESPECÍFICOS
+# ===============================================
+
+# Configurações específicas do usuário
+config/local.json
+config/development.json
+config/production.json
+
+# Arquivos de credenciais
+credentials.json
+auth.json
+oauth.json
+
+# Arquivos de sessão
+session.json
+user-session.json
+
+# ===============================================
+# 📊 DADOS DE ANALYTICS E MÉTRICAS
+# ===============================================
+
+# Arquivos de analytics local
+analytics.json
+metrics.json
+tracking.json
+
+# Relatórios de performance
+performance-reports/
+benchmark-results/
+
+# ===============================================
+# 🗂️ DOCUMENTAÇÃO TEMPORÁRIA
+# ===============================================
+
+# Documentos de desenvolvimento temporários
+docs/temp/
+docs/drafts/
+docs/old/
+
+# Arquivos de documentação desatualizados
+PROXIMAS_ETAPAS.md
+RESUMO_ATUAL.md
+RESUMO_DEPLOY_29-09-2025.md
+rules-project.md
+DESENVOLVIMENTO_PILOTO.md
+PROMPT_CONTINUACAO.md
+
+# Manter apenas documentação atual
+!docs/README.md
+!docs/API.md
+!docs/DEPLOY.md
+!docs/SETUP.md
+
+# ===============================================
+# 🚀 ARQUIVOS DE DEPLOY E BUILD
+# ===============================================
+
+# Arquivos gerados pelo build
+public/build/
+static/build/
+
+# Arquivos de deploy temporários
+deploy/
+deployment/
+
+# Configurações específicas de plataforma
+.vercel/
+.netlify/
+firebase.json
+
+# ===============================================
+# 📱 ARQUIVOS MOBILE E PWA
+# ===============================================
+
+# Arquivos de build mobile
+android/
+ios/
+*.apk
+*.aab
+*.ipa
+
+# Arquivos PWA temporários
+pwa-build/
+manifest-temp.json
+
+# ===============================================
+# 🧪 ARQUIVOS DE TESTE
+# ===============================================
+
+# Resultados de testes (manter apenas se necessário)
+test-results/old/
+playwright-report/old/
+
+# Arquivos de teste temporários
+test-temp/
+test-drafts/
+
+# ===============================================
+# 📝 ARQUIVOS DE EDITORES
+# ===============================================
+
+# Configurações específicas do usuário
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos de backup de editores
+*.bak
+*.orig
+*.rej
+
+# ===============================================
+# 🌐 ARQUIVOS DE NAVEGADORES
+# ===============================================
+
+# Cache do navegador
+.cache/
+.parcel-cache/
+
+# ===============================================
+# 📋 ARQUIVOS ESPECÍFICOS DO PROJETO
+# ===============================================
+
+# Templates e arquivos de exemplo
+templates/
+examples/
+samples/
+
+# Scripts de desenvolvimento temporários
+scripts/temp/
+scripts/test-temp/
+
+# Arquivos de análise temporários
+analysis/
+reports/temp/
+
+# ===============================================
+# 🔒 ARQUIVOS DE PRODUÇÃO (NÃO VERSIONAR)
+# ===============================================
+
+# Arquivos de produção que não devem ser versionados
+public/uploads/
+uploads/
+files/
+assets/temp/
+
+# ===============================================
+# 📊 MÉTRICAS E MONITORAMENTO
+# ===============================================
+
+# Arquivos de métricas locais
+metrics/
+monitoring/
+analytics/local/
+
+# ===============================================
+# 🛡️ ARQUIVOS DE SEGURANÇA
+# ===============================================
+
+# Certificados e chaves
+ssl/
+certs/
+keys/
+security/
+
+# ===============================================
+# 📱 ARQUIVOS MOBILE ESPECÍFICOS
+# ===============================================
+
+# Builds móveis
+mobile-build/
+android-build/
+ios-build/
+
+# ===============================================
+# 🗂️ ESTRUTURA DE DOCUMENTAÇÃO (LIMPA)
+# ===============================================
+
+# Manter apenas documentação atual e organizada
+docs/
+!docs/
+docs/**/*.md
+!README.md
+!CONTRIBUTING.md
+!CHANGELOG.md
+
+# ===============================================
+# 🚀 ARQUIVOS PERMITIDOS NO REPOSITÓRIO
+# ===============================================
+
+# Estrutura principal do projeto
+!backend/
+!frontend/
+!playwright/
+!docs/
+!public/
+!src/
+
+# Arquivos de configuração essenciais
+!package.json
+!playwright.config.js
+!.gitignore
+!README.md
+
+# Scripts essenciais
+!scripts/
+scripts/*.mjs
+scripts/*.js
+!scripts/essential/
+
+# Documentação atual
+!ROADMAP_PRODUCAO_COMERCIAL.md
+!DOCUMENTACAO_API.md
+!DEPLOY_EMPRESARIAL.md
+!DOCUMENTACAO_OLLAMA_INTEGRATION.md
+!ESTRATEGIAS_MOBILE_BUBBLEWRAP.md
+!RELATORIO_TESTES_E_PROBLEMAS.md
+
+# ===============================================
+# 📝 REGRAS GERAIS
+# ===============================================
+
+# Arquivos que começam com ponto (exceto os permitidos)
+.*
+!README.md
+!.gitignore
+!.env.example
+
+# Arquivos de backup
+*.bak
+*.backup
+*.old
+*.orig
+
+# Arquivos comprimidos desnecessários
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Arquivos de sistema
+*.lnk
+*.url
+
+# ===============================================
+# 🔧 CONFIGURAÇÕES ESPECÍFICAS
+# ===============================================
+
+# Ignorar arquivos de exemplo que não devem ser editados
+*example.txt
+*template.json
+*.example
+
+# Ignorar arquivos de documentação antigos
+*old*.md
+*temp*.md
+*draft*.md
+
+# Manter apenas documentação atualizada
+!ROADMAP*.md
+!DOC*.md
+!DEPLOY*.md
+!ESTRATEG*.md
+!RELATORIO*.md
+
+# ===============================================
+# 📦 FINAL - CONFIRMAÇÃO DE ESTRUTURA LIMPA
+# ===============================================
+
+# Esta configuração garante que:
+# ✅ Código fonte seja versionado
+# ✅ Dados sensíveis fiquem seguros
+# ✅ Documentação atualizada seja mantida
+# ✅ Arquivos temporários sejam ignorados
+# ✅ Estrutura profissional seja preservada

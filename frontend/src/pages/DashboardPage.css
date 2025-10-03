@@ -1,0 +1,207 @@
+/* src/pages/DashboardPage.css */
+
+.dashboard-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-5);
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+  padding: var(--spacing-6) 0;
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.dashboard-header h1 {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-2);
+}
+
+.dashboard-header p {
+  font-size: var(--font-size-lg);
+  opacity: 0.9;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.dashboard-section {
+  background: var(--color-bg-primary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-6);
+}
+
+.dashboard-section h2 {
+  font-size: var(--font-size-2xl);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-5);
+  text-align: center;
+}
+
+.progress-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-5);
+}
+
+.progress-card {
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-5);
+  text-align: center;
+  transition: var(--transition-normal);
+}
+
+.progress-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.progress-card h3 {
+  font-size: var(--font-size-xl);
+  color: var(--color-primary-500);
+  margin-bottom: var(--spacing-3);
+}
+
+.progress-card p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-4);
+}
+
+.progress-bar {
+  height: 12px;
+  background: var(--color-bg-tertiary);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: var(--spacing-2);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-5);
+}
+
+.action-card {
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-5);
+  text-align: center;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  transition: var(--transition-normal);
+  border: 2px solid transparent;
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary-500);
+}
+
+.action-icon {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-4);
+}
+
+.action-card h3 {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary-500);
+  margin-bottom: var(--spacing-2);
+}
+
+.action-card p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-bottom: 0;
+}
+
+.recommendations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-5);
+}
+
+.recommendation-card {
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-5);
+  transition: var(--transition-normal);
+}
+
+.recommendation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.recommendation-card h3 {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-3);
+}
+
+.recommendation-card p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-4);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .dashboard-page {
+    padding: 0 var(--spacing-3);
+  }
+  
+  .dashboard-header {
+    padding: var(--spacing-4) var(--spacing-3);
+  }
+  
+  .dashboard-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .dashboard-header p {
+    font-size: var(--font-size-base);
+  }
+  
+  .dashboard-content {
+    gap: var(--spacing-6);
+  }
+  
+  .dashboard-section {
+    padding: var(--spacing-4);
+  }
+  
+  .dashboard-section h2 {
+    font-size: var(--font-size-xl);
+  }
+  
+  .progress-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .recommendations {
+    grid-template-columns: 1fr;
+  }
+}

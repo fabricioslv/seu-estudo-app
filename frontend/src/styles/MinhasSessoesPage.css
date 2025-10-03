@@ -1,0 +1,73 @@
+
+.minhas-sessoes-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.minhas-sessoes-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.sessoes-section {
+    margin-bottom: 3rem;
+}
+
+.sessoes-section h2 {
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: #007bff;
+}
+
+.sessao-card {
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-left: 5px solid #ccc; /* Default border color */
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.sessao-card.status-pendente { border-left-color: #ffc107; } /* Amarelo */
+.sessao-card.status-aceita { border-left-color: #28a745; } /* Verde */
+.sessao-card.status-recusada { border-left-color: #dc3545; } /* Vermelho */
+.sessao-card.status-concluida { border-left-color: #17a2b8; } /* Azul info */
+.sessao-card.status-cancelada { border-left-color: #6c757d; } /* Cinza */
+
+.sessao-card p {
+    margin: 0.5rem 0;
+}
+
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.status-pendente .status-badge { background-color: #ffc107; color: #333; }
+.status-aceita .status-badge { background-color: #28a745; }
+.status-recusada .status-badge { background-color: #dc3545; }
+.status-concluida .status-badge { background-color: #17a2b8; }
+.status-cancelada .status-badge { background-color: #6c757d; }
+
+.sessao-card .actions {
+    margin-top: 1rem;
+}
+
+.sessao-card .actions button {
+    margin-right: 10px;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.btn-accept { background-color: #28a745; }
+.btn-decline { background-color: #dc3545; }

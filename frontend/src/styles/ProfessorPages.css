@@ -1,0 +1,78 @@
+
+.professor-page-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.professor-page-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-container, .list-container {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.form-container h2, .list-container h2 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-container button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background-color: #28a745; /* Verde */
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.form-container button:hover {
+    background-color: #218838;
+}
+
+.list-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+.list-container li {
+    padding: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.list-container li:last-child {
+    border-bottom: none;
+}
+
+.list-container h3 {
+    margin: 0 0 0.5rem 0;
+}

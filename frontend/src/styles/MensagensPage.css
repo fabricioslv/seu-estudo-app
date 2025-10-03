@@ -1,0 +1,151 @@
+
+.mensagens-page-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+}
+
+.mensagens-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* ConversationList styles */
+.conversations-list {
+    border-right: 1px solid #eee;
+    padding: 1rem;
+    overflow-y: auto;
+    background-color: #fcfcfc;
+}
+
+.conversations-list h2 {
+    margin-top: 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    font-size: 1.2rem;
+}
+
+.conversations-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.conversations-list li {
+    padding: 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+}
+
+.conversations-list li:hover {
+    background-color: #f1f1f1;
+}
+
+.conversations-list li.selected {
+    background-color: #e0eafc;
+    font-weight: bold;
+}
+
+/* MessageView wrapper */
+.message-view-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* MessageView styles */
+.message-view-container {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.message-view-container.empty {
+    justify-content: center;
+    align-items: center;
+    color: #888;
+}
+
+.messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message-bubble {
+    padding: 10px 15px;
+    border-radius: 20px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.message-bubble p {
+    margin: 0;
+}
+
+.message-bubble span {
+    font-size: 0.75rem;
+    color: #666;
+    display: block;
+    text-align: right;
+    margin-top: 5px;
+}
+
+.message-bubble.sent {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+}
+
+.message-bubble.sent span {
+    color: #f1f1f1;
+}
+
+.message-bubble.received {
+    background-color: #f1f1f1;
+    color: #333;
+    align-self: flex-start;
+}
+
+/* MessageInput styles */
+.message-input-form {
+    display: flex;
+    padding: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.message-input-form input {
+    flex-grow: 1;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-right: 1rem;
+}
+
+.message-input-form button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.message-input-form button:hover {
+    background-color: #0056b3;
+}
