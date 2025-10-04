@@ -44,7 +44,7 @@ const registerRateLimit = rateLimit({
   legacyHeaders: false,
 });
 
-module.exports = {
+export {
   authRateLimit,
   generalRateLimit,
   registerRateLimit,

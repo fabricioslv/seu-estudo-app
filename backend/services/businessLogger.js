@@ -3,7 +3,7 @@
  * Registra ações importantes dos usuários e eventos significativos
  */
 
-const { businessLogger, logger } = require('./logger');
+import { businessLogger, logger } from './logger.js';
 
 // Classe para rastreamento de ações de usuários
 class UserActivityTracker {
@@ -411,9 +411,11 @@ const businessActivityMiddleware = (req, res, next) => {
   next();
 };
 
-module.exports = {
+export {
   UserActivityTracker,
   BusinessEventTracker,
+  businessActivityMiddleware,
+  businessLogger,
   logAuthenticationEvent,
   logStudyEvent,
   logGamificationEvent,
@@ -423,5 +425,5 @@ module.exports = {
   logSystemEvent,
   logIntegrationEvent,
   generateBusinessReport,
-  businessActivityMiddleware,
 };
+

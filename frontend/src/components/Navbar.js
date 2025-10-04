@@ -1,5 +1,5 @@
 // src/components/Navbar.js
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './notifications/NotificationBell';
@@ -8,9 +8,14 @@ import './Navbar.css';
 const Navbar = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
   };
 
   // Não mostrar navbar nas páginas de login e registro
@@ -24,8 +29,8 @@ const Navbar = () => {
         <Link to="/" className="navbar-brand" aria-label="Página inicial">
           <h1>Seu-Estudo</h1>
         </Link>
-        
-        <ul className="navbar-nav">
+
+        <ul className={`navbar-nav ${mobileMenuOpen ? 'active' : ''}`}>
           {user ? (
             <>
               <li className="nav-item">
@@ -104,6 +109,16 @@ const Navbar = () => {
             </>
           )}
         </ul>
+
+        {/* Mobile menu toggle */}
+        <button
+          className="mobile-menu-toggle"
+          onClick={toggleMobileMenu}
+          aria-label="Toggle mobile menu"
+          aria-expanded={mobileMenuOpen}
+        >
+          {mobileMenuOpen ? '✕' : '☰'}
+        </button>
       </div>
     </nav>
   );

@@ -3,10 +3,14 @@
  * Implementa diferentes níveis de log, rotação de arquivos e formatos estruturados
  */
 
-const winston = require('winston');
-const DailyRotateFile = require('winston-daily-rotate-file');
-const path = require('path');
-const os = require('os');
+import winston from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
+import path from 'path';
+import os from 'os';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Define os níveis de log personalizados
 const customLevels = {
@@ -237,7 +241,7 @@ const performanceMiddleware = (req, res, next) => {
   next();
 };
 
-module.exports = {
+export {
   logger,
   addContext,
   securityLogger,
@@ -247,3 +251,4 @@ module.exports = {
   httpLoggerMiddleware,
   performanceMiddleware,
 };
+

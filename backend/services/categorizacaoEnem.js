@@ -886,3 +886,4 @@ class CategorizadorEnem {
 
 // Criar e exportar uma instância do serviço
 module.exports = new CategorizadorEnem();
+

@@ -1,7 +1,7 @@
 // services/extractors/batchProcessor.js
-const fs = require('fs');
-const path = require('path');
-const enhancedExtractor = require('./enhancedExtractor');
+import fs from 'fs';
+import path from 'path';
+import enhancedExtractor from './enhancedExtractor.js';
 
 class BatchProcessor {
   constructor(examDirectory, gabaritoDirectory) {
@@ -18,16 +18,19 @@ class BatchProcessor {
         throw new Error(
           `Diretório de provas não encontrado: ${this.examDirectory}`
         );
+      }
 
       if (!fs.existsSync(this.gabaritoDirectory)) {
         console.warn(
           `Diretório de gabaritos não encontrado: ${this.gabaritoDirectory}. Continuando sem gabaritos.`
         );
+      }
 
       // Get all exam files
       const examFiles = this.getExamFiles();
       console.log(
         `Encontrados ${examFiles.length} arquivos de prova para processar.`
+      );
 
       if (examFiles.length === 0) {
         console.warn('Nenhum arquivo de prova encontrado para processar.');
@@ -46,11 +49,13 @@ class BatchProcessor {
           const examPath = path.join(this.examDirectory, examFile);
           const gabaritoPath = gabaritoFile
             ? path.join(this.gabaritoDirectory, gabaritoFile)
+            : null;
 
           // Extract questions
           const extractionResult = await enhancedExtractor.extract(
             examPath,
             gabaritoPath
+          );
 
           // Add additional metadata to result
           results.push({
@@ -336,4 +341,4 @@ class BatchProcessor {
   }
 }
 
-module.exports = BatchProcessor;
+export default BatchProcessor;

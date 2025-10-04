@@ -30,18 +30,18 @@ const HomePage = () => {
       <section className="hero">
         <div className="container">
           <div className="hero-content">
-            <h1 className="hero-title">Aprenda de forma inteligente e gamificada</h1>
+            <h1 className="hero-title">Plataforma Completa de Estudos com IA</h1>
             <p className="hero-subtitle">
-              Prepare-se para o ENEM e vestibulares com nossa plataforma educacional completa. 
-              Questões reais, simulados personalizados e um sistema de recompensas que torna o estudo divertido.
+              Revolucione sua preparação para o ENEM com processamento inteligente de livros didáticos,
+              simulados personalizados, sistema de tutoria colaborativo e gamificação avançada.
             </p>
             <div className="hero-actions">
-              <Link to="/registrar" className="btn btn-primary btn-large">Comece Gratuitamente</Link>
+              <Link to="/registrar" className="btn btn-primary btn-large">Começar Gratuitamente</Link>
               <Link to="/simulados" className="btn btn-secondary btn-large">Ver Demonstração</Link>
             </div>
           </div>
           <div className="hero-image">
-            <img src="/images/study-hero.png" alt="Estudante usando o Seu-Estudo" />
+            <img src="/logo512.png" alt="Plataforma Seu-Estudo com IA" />
           </div>
         </div>
       </section>
@@ -49,38 +49,54 @@ const HomePage = () => {
       {/* Features Section */}
       <section id="features" className="features">
         <div className="container">
-          <h2 className="section-title">Por que escolher o Seu-Estudo?</h2>
+          <h2 className="section-title">Funcionalidades Inovadoras</h2>
           <div className="features-grid">
             <div className="feature-card">
               <div className="feature-icon">
-                <span role="img" aria-label="Questões">📚</span>
+                <span role="img" aria-label="Processamento IA">🤖</span>
               </div>
-              <h3>Questões Reais do ENEM</h3>
-              <p>Acesse todas as questões dos anos anteriores com resoluções detalhadas e explicações inteligentes.</p>
+              <h3>Processamento de Livros com IA</h3>
+              <p>Envie seus livros didáticos em PDF e nossa IA extrai automaticamente questões, resumos e conteúdo estruturado para estudo otimizado.</p>
             </div>
-            
+
             <div className="feature-card">
               <div className="feature-icon">
-                <span role="img" aria-label="Simulados">📝</span>
+                <span role="img" aria-label="ENEM">📊</span>
               </div>
-              <h3>Simulados Personalizados</h3>
-              <p>Crie simulados com base em suas necessidades e acompanhe seu desempenho ao longo do tempo.</p>
+              <h3>Sistema Completo ENEM</h3>
+              <p>Acesse todas as questões do ENEM dos anos anteriores com resolução em vídeo, comentários de professores e estatísticas de desempenho.</p>
             </div>
-            
+
             <div className="feature-card">
               <div className="feature-icon">
-                <span role="img" aria-label="Gamificação">🏆</span>
+                <span role="img" aria-label="Gamificação">🎮</span>
               </div>
-              <h3>Gamificação Completa</h3>
-              <p>Ganhe pontos, conquistas e suba no ranking enquanto estuda. Torne o aprendizado divertido!</p>
+              <h3>Gamificação Avançada</h3>
+              <p>Sistema de pontos, conquistas, rankings e desafios entre usuários. Transforme seus estudos em uma experiência divertida e competitiva.</p>
             </div>
-            
+
             <div className="feature-card">
               <div className="feature-icon">
-                <span role="img" aria-label="IA">🤖</span>
+                <span role="img" aria-label="Tutoria">👥</span>
               </div>
-              <h3>Assistente de IA</h3>
-              <p>Receba explicações personalizadas e planos de estudo adaptados ao seu perfil de aprendizado.</p>
+              <h3>Sistema de Tutoria</h3>
+              <p>Conecte-se com tutores especializados, agende sessões individuais e tenha acompanhamento personalizado do seu progresso.</p>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon">
+                <span role="img" aria-label="Colaborativo">🤝</span>
+              </div>
+              <h3>Recursos Colaborativos</h3>
+              <p>Compartilhe resumos, crie grupos de estudo, colabore em projetos e tenha acesso a materiais produzidos pela comunidade.</p>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon">
+                <span role="img" aria-label="Autenticação">🔐</span>
+              </div>
+              <h3>Sistema de Autenticação Completo</h3>
+              <p>Cadastro seguro, recuperação de senha, autenticação de dois fatores e perfis diferenciados para alunos e professores.</p>
             </div>
           </div>
         </div>
@@ -91,23 +107,25 @@ const HomePage = () => {
         <div className="container">
           <div className="about-content">
             <div className="about-image">
-              <img src="/images/study-group.png" alt="Grupo de estudantes" />
+              <img src="/logo512.png" alt="Plataforma Seu-Estudo" />
             </div>
             <div className="about-text">
               <h2>Sobre o Seu-Estudo</h2>
               <p>
-                Somos uma plataforma educacional desenvolvida especialmente para ajudar estudantes 
-                brasileiros a se prepararem para o ENEM e vestibulares de forma eficiente e engajante.
+                Somos uma plataforma educacional inovadora que utiliza inteligência artificial para revolucionar
+                a preparação para o ENEM e vestibulares. Nossa missão é democratizar o acesso à educação de qualidade.
               </p>
               <p>
-                Nosso sistema combina tecnologia de ponta com metodologias pedagógicas comprovadas 
-                para oferecer a melhor experiência de aprendizado possível.
+                Combinamos tecnologia de ponta com metodologias pedagógicas comprovadas para oferecer
+                uma experiência de aprendizado personalizada e eficiente.
               </p>
               <ul className="about-list">
-                <li>✅ Mais de 10.000 questões resolvidas</li>
-                <li>✅ Sistema de gamificação premiado</li>
-                <li>✅ Assistente de IA personalizado</li>
-                <li>✅ Relatórios de desempenho detalhados</li>
+                <li>✅ Processamento automático de livros didáticos com IA</li>
+                <li>✅ Sistema completo de questões do ENEM com videoaulas</li>
+                <li>✅ Gamificação avançada com rankings e conquistas</li>
+                <li>✅ Sistema de tutoria colaborativo</li>
+                <li>✅ Recursos colaborativos entre estudantes</li>
+                <li>✅ Autenticação segura e perfis diferenciados</li>
               </ul>
             </div>
           </div>
@@ -117,30 +135,30 @@ const HomePage = () => {
       {/* Testimonials Section */}
       <section className="testimonials">
         <div className="container">
-          <h2 className="section-title">O que dizem nossos usuários</h2>
+          <h2 className="section-title">Depoimentos dos Usuários</h2>
           <div className="testimonials-grid">
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>"O Seu-Estudo me ajudou a aumentar minha nota em 50 pontos no ENEM. A gamificação torna o estudo muito mais divertido!"</p>
+                <p>"O processamento de livros com IA é incrível! Enviei meu livro de matemática e em minutos tinha questões organizadas por capítulo com resolução automática."</p>
               </div>
               <div className="testimonial-author">
-                <img src="/images/avatar1.png" alt="Maria Silva" />
+                <img src="/logo512.png" alt="Ana Costa" />
                 <div>
-                  <h4>Maria Silva</h4>
-                  <p>Aprovada na USP</p>
+                  <h4>Ana Costa</h4>
+                  <p>Estudante de Medicina</p>
                 </div>
               </div>
             </div>
-            
+
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>"As explicações da IA são fantásticas! Nunca tinha entendido trigonometria tão facilmente."</p>
+                <p>"O sistema de tutoria colaborativo me conectou com professores excelentes. As sessões individuais fazem toda a diferença no meu desempenho."</p>
               </div>
               <div className="testimonial-author">
-                <img src="/images/avatar2.png" alt="João Santos" />
+                <img src="/logo512.png" alt="Carlos Oliveira" />
                 <div>
-                  <h4>João Santos</h4>
-                  <p>Aprovado no ITA</p>
+                  <h4>Carlos Oliveira</h4>
+                  <p>Aprovado no ENEM 2024</p>
                 </div>
               </div>
             </div>
@@ -151,9 +169,9 @@ const HomePage = () => {
       {/* CTA Section */}
       <section className="cta">
         <div className="container">
-          <h2>Pronto para transformar sua jornada de estudos?</h2>
-          <p>Comece hoje mesmo e veja a diferença que o Seu-Estudo pode fazer na sua preparação!</p>
-          <Link to="/registrar" className="btn btn-primary btn-large">Cadastre-se Grátis</Link>
+          <h2>Revolucione sua preparação para o ENEM</h2>
+          <p>Experimente o poder da IA na educação e tenha acesso completo às funcionalidades premium gratuitamente!</p>
+          <Link to="/registrar" className="btn btn-primary btn-large">Começar Gratuitamente</Link>
         </div>
       </section>
 

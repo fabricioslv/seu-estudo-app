@@ -264,6 +264,7 @@ router.post('/generate-explanations', async (req, res) => {
         .json({
           error: 'Nenhuma questão fornecida para geração de explicações.',
         });
+    }
 
     console.log(`Gerando explicações para ${questoes.length} questões...`);
 
@@ -294,6 +295,7 @@ router.post('/generate-explanation', async (req, res) => {
         .json({
           error: 'Nenhuma questão fornecida para geração de explicação.',
         });
+    }
 
     console.log(`Gerando explicação para a questão ${questao.numero}...`);
 
@@ -513,6 +515,7 @@ router.post('/importar-enem', async (req, res) => {
 
     console.log(
       `Iniciando importação de questões do ENEM ${ano}${materia ? ` - Matéria: ${materia}` : ''}...`
+    );
 
     // Importar questões da API do ENEM para o banco de dados
     const ImportadorQuestoesEnem = require('../scripts/importarQuestoesEnem');
@@ -571,6 +574,7 @@ router.post('/responder', async (req, res) => {
       resposta,
       isCorreta,
       tempoResposta
+    );
 
     res.json({
       success: true,
@@ -601,6 +605,7 @@ router.post('/responder-multiplo', async (req, res) => {
         .json({
           error: 'ID do usuário e array de respostas são obrigatórios.',
         });
+    }
 
     // Importar o serviço de resolução de questões
     const questoesResolucaoService = require('../services/questoesResolucaoService');
@@ -611,6 +616,7 @@ router.post('/responder-multiplo', async (req, res) => {
         usuarioId,
         respostas,
         tipoAtividade
+      );
 
     res.json({
       success: true,
@@ -635,6 +641,7 @@ router.get('/historico/:usuarioId', async (req, res) => {
       usuarioId,
       parseInt(limit),
       parseInt(offset)
+    );
 
     res.json({
       success: true,
@@ -680,6 +687,7 @@ router.post('/generate-study-plan', requireAuth, async (req, res) => {
         .json({
           error: 'Perfil do usuário é obrigatório para gerar plano de estudos.',
         });
+    }
 
     console.log('Gerando plano de estudos para o perfil:', perfil);
 
@@ -730,6 +738,7 @@ router.post('/generate-study-plan', requireAuth, async (req, res) => {
       req.user.id,
       'geracao_plano_estudos',
       10
+    );
 
     res.json({
       success: true,

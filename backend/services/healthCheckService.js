@@ -3,11 +3,11 @@
  * Implementa verificações automáticas de saúde do sistema
  */
 
-const os = require('os');
-const { performanceLogger, logger } = require('./logger');
-const { SystemMetrics, getCurrentMetrics } = require('./performanceLogger');
-const db = require('../db');
-const AlertService = require('./alertService');
+import os from 'os';
+import { performanceLogger, logger } from './logger.js';
+import { SystemMetrics, getCurrentMetrics } from './performanceLogger.js';
+import * as db from '../db/index.js';
+import AlertService from './alertService.js';
 
 class HealthCheckService {
   constructor() {
@@ -638,4 +638,5 @@ class HealthCheckService {
   }
 }
 
-module.exports = HealthCheckService;
+export default HealthCheckService;
+

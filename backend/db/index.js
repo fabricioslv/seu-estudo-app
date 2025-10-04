@@ -1,5 +1,10 @@
 // db/index.js - Configuração da conexão com o PostgreSQL
-const { Pool } = require('pg');
+import { Pool } from 'pg';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -40,8 +45,11 @@ const testConnection = async () => {
   let client;
   const startTime = Date.now();
 
+  console.log('🔍 DIAGNÓSTICO: Iniciando teste de conexão com banco...');
+
   try {
     client = await pool.connect();
+    console.log('🔍 DIAGNÓSTICO: Cliente conectado ao pool com sucesso');
 
     // Teste básico de conectividade
     const result = await client.query(
@@ -134,8 +142,10 @@ const checkDatabaseHealth = async () => {
   };
 };
 
-module.exports = {
-  query: (text, params) => pool.query(text, params),
+const query = (text, params) => pool.query(text, params);
+
+export {
+  query,
   pool,
   testConnection,
   getPoolStats,

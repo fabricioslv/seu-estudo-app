@@ -434,7 +434,7 @@ async function insertContent(db, livroId, capituloId, topicoId, conteudoBlock) {
   const { tipo, texto, pagina } = conteudoBlock;
 
   const contentResult = await db.query(
-    'INSERT INTO conteudos (livro_id, capitulo_id, topico_id, tipo, texto, pagin-inicial, pagina_final) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+    'INSERT INTO conteudos (livro_id, capitulo_id, topico_id, tipo, texto, pagina_inicial, pagina_final) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
     [livroId, capituloId, topicoId, tipo, texto, pagina, pagina]
   );
   const conteudoId = contentResult.rows[0].id;
@@ -534,3 +534,4 @@ if (!fileName) {
 }
 
 processarLivro(fileName);
+

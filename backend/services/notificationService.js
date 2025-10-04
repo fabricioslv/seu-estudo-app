@@ -1,6 +1,8 @@
 // Serviço avançado de notificações com IA para engajamento contínuo
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 class NotificationService {
   constructor() {
@@ -636,4 +638,5 @@ class NotificationService {
 }
 
 const notificationService = new NotificationService();
-module.exports = notificationService;
+export default notificationService;
+

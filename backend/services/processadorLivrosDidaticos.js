@@ -1,8 +1,8 @@
 // services/processadorLivrosDidaticos.js
 // Serviço para processar livros didáticos e integrar todo o conteúdo ao sistema
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 const db = require('../db');
 const livroDidaticoExtractor = require('./extractors/livroDidaticoExtractor');
 const categorizadorEnem = require('./categorizacaoEnem');
@@ -40,6 +40,7 @@ class ProcessadorLivrosDidaticos {
       console.log('Iniciando processamento de todos os livros didáticos...');
       this.logProcessamento(
         '=== INICIANDO PROCESSAMENTO DE TODOS OS LIVROS DIDÁTICOS ==='
+      );
 
       if (!fs.existsSync(this.livrosDir)) {
         throw new Error(
@@ -82,6 +83,7 @@ class ProcessadorLivrosDidaticos {
           const resultado = await this.processarLivroIndividual(
             fileName,
             categorizarAutomaticamente
+          );
 
           resultados.processados++;
           resultados.conteudoExtraido += resultado.conteudoExtraido || 0;
@@ -571,3 +573,5 @@ Taxa de sucesso: ${((resultados.processados / resultados.total) * 100).toFixed(2
 
 // Criar e exportar uma instância do processador
 module.exports = new ProcessadorLivrosDidaticos();
+
+

@@ -1,8 +1,8 @@
 // services/extractors/bookExtractor.js
-const fs = require('fs');
-const path = require('path');
-const pdfParse = require('pdf-parse');
-const pdfjsLib = require('pdfjs-dist');
+import fs from 'fs';
+import path from 'path';
+import pdfParse from 'pdf-parse';
+import pdfjsLib from 'pdfjs-dist';
 
 // Configuração para usar a versão de Node.js do pdfjs-dist
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`;
@@ -13,73 +13,58 @@ class BookExtractor {
     this.contentPatterns = {
       // Padrões para identificar títulos e subtítulos
       titlePattern:
-        /^(#{1,6}\s+|\d+[\.\s]\d*\.?\s*|[IVX]+[\.\s]|Cap[íi]tulo\s+\d+[:\s]|Se[cç][ãa]o\s+\d+[:\s])/i,
+        /^(#{1,6}\\s+|\\d+[\\.\\s]\\d*\\.?\\s*|[IVX]+[\\.\\s]|Cap[íi]tulo\\s+\\d+[:\\s]|Se[cç][ãa]o\\s+\\d+[:\\s])/i,
 
       // Padrões para identificar definições
       definitionPattern:
-        /(defini[çc][ãa]o|significado|o que [ée]|conceito de):?\s*([^.!?]+)[.!?]/i,
+        /(defini[çc][ãa]o|significado|o que [ée]|conceito de):?\\s*([^.!?]+)[.!?]/i,
 
       // Padrões para identificar exemplos
       examplePattern:
-        /(exemplo|exemplificando|por exemplo|caso|casos):\s*([^.!?]+)[.!?]/i,
+        /(exemplo|exemplificando|por exemplo|caso|casos):\\s*([^.!?]+)[.!?]/i,
 
       // Padrões para identificar exercícios
       exercisePattern:
-        /(exerc[ií]cio|atividade|pr[áa]tica|teste|quest[ãa]o)\s*(\d+)?[.:]?\s*/i,
+        /(exerc[ií]cio|atividade|pr[áa]tica|teste|quest[ãa]o)\\s*(\\d+)?[.:]?\\s*/i,
 
       // Padrões para identificar boxes de informação
-      boxPattern: /(box|destaque|importante|saiba mais|curiosidade)[:\s]/i,
+      boxPattern: /(box|destaque|importante|saiba mais|curiosidade)[:\\s]/i,
 
       // Padrões para identificar tabelas de conteúdo
-      contentTablePattern: /(conte[úu]do|sum[áa]rio|t[óo]pico|tema)[:\s]/i,
+      contentTablePattern: /(conte[úu]do|sum[áa]rio|t[óo]pico|tema)[:\\s]/i,
 
       // Padrões para identificar resumos
       summaryPattern:
-        /(resumo|s[ií]ntese|conclus[ãa]o|pontos principais)[:\s]/i,
-    };
-
-    // Tipos de conteúdo identificados
-    this.contentTypes = {
-      title: 'Título',
-      subtitle: 'Subtítulo',
-      definition: 'Definição',
-      example: 'Exemplo',
-      exercise: 'Exercício',
-      information_box: 'Box de Informação',
-      content_table: 'Tabela de Conteúdo',
-      summary: 'Resumo',
-      paragraph: 'Parágrafo',
-      image_description: 'Descrição de Imagem',
-      table: 'Tabela',
+        /(resumo|s[ií]ntese|conclus[ãa]o|pontos principais)[:\\s]/i,
     };
   }
 
   /**
-   * Extrair conteúdo de um livro didático em PDF
+   * Extrair conteúdo de um livro didático PDF
    * @param {string} filePath - Caminho do arquivo PDF
-   * @param {string} bookInfo - Informações sobre o livro (título, ano, disciplina, etc.)
    * @returns {Promise<Object>} - Conteúdo extraído
    */
-  async extract(filePath, bookInfo = {}) {
+  async extract(filePath) {
     try {
-      console.log(`Iniciando extração do livro: ${path.basename(filePath)}`);
-
-      if (!fs.existsSync(filePath)) {
-        throw new Error(`Arquivo não encontrado: ${filePath}`);
-      }
+      console.log(`Iniciando extração do livro: ${filePath}`);
 
       // Extrair texto e informações de layout do PDF
       const layoutData = await this.extractWithLayout(filePath);
+
+      // Extrair informações básicas do livro (título, autor, etc.)
+      const bookInfo = await this.extractBookInfo(layoutData);
 
       // Processar o conteúdo e identificar diferentes tipos de elementos
       const processedContent = await this.processBookContent(
         layoutData,
         bookInfo
+      );
 
       // Converter o conteúdo processado em questões e resumos
       const convertedQuestions = this.convertToQuestions(
         processedContent,
         bookInfo
+      );
 
       return {
         bookInfo,
@@ -98,176 +83,148 @@ class BookExtractor {
   /**
    * Extrair conteúdo mantendo informações de layout
    * @param {string} filePath - Caminho do arquivo PDF
-   * @returns {Promise<Object>} - Conteúdo com informações de layout
+   * @returns {Promise<Object>} - Dados com informações de layout
    */
   async extractWithLayout(filePath) {
     try {
       const dataBuffer = fs.readFileSync(filePath);
 
-      // Carrega o PDF
-      const pdf = await pdfjsLib.getDocument({ data: dataBuffer }).promise;
+      // Carregar o PDF
+      const pdf = await pdfjsLib.getDocument({
+        data: dataBuffer,
+        cMapUrl: 'https://unpkg.com/pdfjs-dist@3.4.120/cmaps/',
+        cMapPacked: true,
+      }).promise;
 
-      const extractedData = {
-        text: '',
-        pages: [],
-        metadata: null,
-        outlines: [] // Sumário do livro
-      };
+      const pages = [];
+      const metadata = await pdf.getMetadata();
 
-      // Extrai metadados
-      extractedData.metadata = await pdf.getMetadata().catch(() => null);
-
-      // Extrai o sumário (outlines) se disponível
-      try {
-        extractedData.outlines = await pdf.getOutline();
-      } catch (outlineError) {
-        console.warn(
-          'Não foi possível extrair o sumário:',
-          outlineError.message
-        );
-      }
-
-      // Processa cada página
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-
-        // Obtém o conteúdo da página com informações de posição
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
         const content = await page.getTextContent();
-        const viewport = page.getViewport({ scale: 1.0 });
+        const viewport = page.getViewport({ scale: 1.5 });
 
-        // Extrai o texto e as informações de posição
-        let pageText = '';
-        const positionedTexts = [];
-
-        for (const item of content.items) {
-          if ('str' in item) {
-            positionedTexts.push({
-              str: item.str,
-              x: item.transform[4],
-              y: item.transform[5],
-              width: item.width,
-              height: item.height,
-              fontSize: item.height, // Aproximação do tamanho da fonte
-            });
-            pageText += `${item.str  } `;
-          }
-        }
-
-        // Ordena os textos por posição (esquerda para direita, cima para baixo)
-        positionedTexts.sort((a, b) => {
-          // Se estiver na mesma linha (com pequena tolerância), ordena por x
-          if (Math.abs(a.y - b.y) < 10) {
-            return a.x - b.x;
-          }
-          // Caso contrário, ordena por y (linha superior primeiro)
-          return a.y - b.y;
+        pages.push({
+          number: pageNum,
+          content,
+          viewport,
+          width: viewport.width,
+          height: viewport.height,
         });
-
-        extractedData.pages.push({
-          pageNumber: i,
-          text: pageText,
-          positionedTexts: positionedTexts,
-          viewport: viewport,
-        });
-
-        extractedData.text += `${pageText  } \n`;
       }
 
-      return extractedData;
+      return {
+        pages,
+        metadata,
+        totalPages: pdf.numPages,
+        title: metadata.Title || path.basename(filePath, '.pdf'),
+      };
     } catch (error) {
-      console.error('Erro na extração com layout:', error);
+      console.error('Erro ao extrair com layout:', error);
       throw error;
     }
   }
 
   /**
-   * Processar o conteúdo do livro identificando diferentes tipos de elementos
-   * @param {Object} layoutData - Dados com layout
-   * @param {Object} bookInfo - Informações do livro
-   * @returns {Array} - Conteúdo processado
+   * Extrair informações básicas do livro (título, autor, etc.)
+   * @param {Object} layoutData - Dados com informações de layout
+   * @returns {Object} - Informações básicas do livro
    */
-  processBookContent(layoutData, bookInfo) {
+  async extractBookInfo(layoutData) {
+    const firstPageText = layoutData.pages[0]?.content?.items
+      .map((item) => item.str)
+      .join(' ') || '';
+
+    // Extrair título e subtítulo da primeira página
+    const titleMatch = firstPageText.match(
+      /(?:^|\n)\s*(.{0,100}?)(?:\n|$)/
+    );
+    const title = titleMatch ? titleMatch[1].trim() : 'Título não identificado';
+
+    return {
+      title,
+      author: layoutData.metadata.Author || 'Autor não identificado',
+      subject: layoutData.metadata.Subject || '',
+      keywords: layoutData.metadata.Keywords || '',
+      totalPages: layoutData.totalPages,
+      publisher: layoutData.metadata.Producer || '',
+      language: layoutData.metadata.Language || 'Português',
+    };
+  }
+
+  /**
+   * Processar conteúdo do livro e identificar diferentes tipos de elementos
+   * @param {Object} layoutData - Dados com informações de layout
+   * @param {Object} bookInfo - Informações básicas do livro
+   * @returns {Array} - Conteúdo processado com diferentes tipos de elementos
+   */
+  async processBookContent(layoutData, bookInfo) {
     const processedContent = [];
-    let currentSection = null;
 
-    // Processar cada página
     for (const page of layoutData.pages) {
-      // Identificar seções, títulos e subtítulos
-      const pageContent = this.analyzePageContent(page, bookInfo);
+      const pageText = page.content.items.map((item) => item.str).join(' ');
 
-      // Adicionar o conteúdo processado
-      processedContent.push(...pageContent);
+      // Identificar diferentes tipos de elementos na página
+      const elements = this.identifyElements(pageText, page.content.items);
 
-      // Atualizar a seção atual se encontrar um novo título
-      const titleContent = pageContent.find(
-        (c) => c.type === 'title' || c.type === 'subtitle'
-      );
-      if (titleContent) {
-        currentSection = titleContent.text;
-      }
+      processedContent.push({
+        page: page.number,
+        elements,
+        text: pageText,
+        wordCount: pageText.split(/\s+/).length,
+      });
     }
 
     return processedContent;
   }
 
   /**
-   * Analisar o conteúdo de uma página específica
-   * @param {Object} page - Dados da página
-   * @param {Object} bookInfo - Informações do livro
-   * @returns {Array} - Conteúdo da página analisado
+   * Identificar diferentes tipos de elementos em um texto
+   * @param {string} text - Texto para análise
+   * @param {Array} positionedTexts - Textos com informações de posição
+   * @returns {Array} - Elementos identificados
    */
-  analyzePageContent(page, bookInfo) {
-    const content = [];
-    const fullText = page.text;
+  identifyElements(text, positionedTexts) {
+    const elements = [];
 
     // Identificar títulos e subtítulos
-    const titles = this.identifyTitles(fullText, page.positionedTexts);
-    content.push(...titles);
+    const titles = this.identifyTitles(text, positionedTexts);
+    elements.push(...titles);
 
     // Identificar definições
-    const definitions = this.identifyDefinitions(fullText);
-    content.push(...definitions);
+    const definitions = this.identifyDefinitions(text);
+    elements.push(...definitions);
 
     // Identificar exemplos
-    const examples = this.identifyExamples(fullText);
-    content.push(...examples);
+    const examples = this.identifyExamples(text);
+    elements.push(...examples);
 
     // Identificar exercícios
-    const exercises = this.identifyExercises(fullText);
-    content.push(...exercises);
+    const exercises = this.identifyExercises(text);
+    elements.push(...exercises);
 
     // Identificar boxes de informação
-    const infoBoxes = this.identifyInformationBoxes(fullText);
-    content.push(...infoBoxes);
+    const boxes = this.identifyBoxes(text);
+    elements.push(...boxes);
 
-    // Processar o restante do texto como parágrafos normais
-    const paragraphs = this.extractParagraphs(fullText, [
-      ...titles,
-      ...definitions,
-      ...examples,
-      ...exercises,
-      ...infoBoxes,
-    ]);
-    content.push(...paragraphs);
+    // Identificar resumos
+    const summaries = this.identifySummaries(text);
+    elements.push(...summaries);
 
-    // Adicionar informação sobre a página
-    return content.map((item) => ({
-      ...item,
-      pageNumber: page.pageNumber,
-      bookInfo: bookInfo,
-    }));
+    return elements;
   }
 
   /**
-   * Identificar títulos e subtítulos no texto
-   * @param {string} text - Texto da página
+   * Identificar títulos em um texto
+   * @param {string} text - Texto para análise
    * @param {Array} positionedTexts - Textos com informações de posição
    * @returns {Array} - Títulos identificados
    */
   identifyTitles(text, positionedTexts) {
     const titles = [];
     const titleMatches = text.match(
-      /\b(\d+[\.\s]\d*\.?\s*[A-Z][^.!?]*|[IVX]+[\.\s][A-Z][^.!?]*|Cap[íi]tulo\s+\d+\s*[:\-\s][^.!?\n]*|Se[cç][ãa]o\s+\d+\s*[:\-\s][^.!?\n]*)/gi
+      /\b(\d+[\.\\s]\d*\.?\s*[A-Z][^.!?]*|[IVX]+[\.\\s][A-Z][^.!?]*|Cap[íi]tulo\s+\d+\s*[:\-\\s][^.!?\n]*|Se[cç][ãa]o\s+\d+\s*[:\-\\s][^.!?\n]*)/gi
+    );
 
     if (titleMatches) {
       titleMatches.forEach((match) => {
@@ -293,40 +250,28 @@ class BookExtractor {
    * @returns {number} - Tamanho estimado
    */
   estimateTextSize(text, positionedTexts) {
-    // Procurar o texto nos positionedTexts e obter o tamanho da fonte mais comum
-    const relevantItems = positionedTexts.filter(
-      (item) =>
-        text.toLowerCase().includes(item.str.toLowerCase()) ||
-        item.str.toLowerCase().includes(text.toLowerCase().substring(0, 10))
-    );
-
-    if (relevantItems.length > 0) {
-      const avgSize =
-        relevantItems.reduce((sum, item) => sum + item.fontSize, 0) /
-        relevantItems.length;
-      return avgSize;
-    }
-
-    return 12; // Tamanho padrão
+    // Este é um exemplo simplificado - em uma implementação real, você usaria
+    // as informações de fonte do positionedTexts para estimar o tamanho
+    if (text.length < 20) return 18;
+    if (text.length < 50) return 15;
+    return 12;
   }
 
   /**
-   * Identificar definições no texto
-   * @param {string} text - Texto para analisar
+   * Identificar definições em um texto
+   * @param {string} text - Texto para análise
    * @returns {Array} - Definições identificadas
    */
   identifyDefinitions(text) {
     const definitions = [];
-    const definitionRegex =
-      /(defini[çc][ãa]o|significado|o que [ée]|\s[ée]\s|conceito de)[:\s]?\s*([^.!?]+)[.!?]/gi;
+    const definitionPattern = this.contentPatterns.definitionPattern;
     let match;
 
-    while ((match = definitionRegex.exec(text)) !== null) {
+    while ((match = definitionPattern.exec(text)) !== null) {
       definitions.push({
         type: 'definition',
-        text: match[0].trim(),
-        definition: match[2].trim(),
-        term: match[1].trim(),
+        text: match[0],
+        term: match[2],
         confidence: 0.8,
       });
     }
@@ -335,22 +280,21 @@ class BookExtractor {
   }
 
   /**
-   * Identificar exemplos no texto
-   * @param {string} text - Texto para analisar
+   * Identificar exemplos em um texto
+   * @param {string} text - Texto para análise
    * @returns {Array} - Exemplos identificados
    */
   identifyExamples(text) {
     const examples = [];
-    const exampleRegex =
-      /(exemplo|exemplificando|por exemplo|caso|casos)[:\s]?\s*([^.!?]+)[.!?]/gi;
+    const examplePattern = this.contentPatterns.examplePattern;
     let match;
 
-    while ((match = exampleRegex.exec(text)) !== null) {
+    while ((match = examplePattern.exec(text)) !== null) {
       examples.push({
         type: 'example',
-        text: match[0].trim(),
-        example: match[2].trim(),
-        confidence: 0.8,
+        text: match[0],
+        content: match[2],
+        confidence: 0.7,
       });
     }
 
@@ -358,47 +302,45 @@ class BookExtractor {
   }
 
   /**
-   * Identificar exercícios no texto
-   * @param {string} text - Texto para analisar
+   * Identificar exercícios em um texto
+   * @param {string} text - Texto para análise
    * @returns {Array} - Exercícios identificados
    */
   identifyExercises(text) {
     const exercises = [];
-    const exerciseRegex =
-      /(exerc[ií]cio|atividade|pr[áa]tica|teste|quest[ãa]o)\s*(\d+)?[.:]?\s*([^.!?]*?)(?=(exerc[ií]cio|atividade|pr[áa]tica|teste|quest[ãa]o)|$)/gi;
+    const exercisePattern = this.contentPatterns.exercisePattern;
     let match;
 
-    while ((match = exerciseRegex.exec(text)) !== null) {
-      exercises.push({
-        type: 'exercise',
-        text: match[0].trim(),
-        exerciseNumber: match[2] || null,
-        content: match[3].trim(),
-        confidence: 0.8,
-      });
+    const lines = text.split('\n');
+    for (const line of lines) {
+      if ((match = exercisePattern.exec(line)) !== null) {
+        exercises.push({
+          type: 'exercise',
+          text: line.trim(),
+          number: match[2] || null,
+          confidence: 0.8,
+        });
+      }
     }
 
     return exercises;
   }
 
   /**
-   * Identificar boxes de informação no texto
-   * @param {string} text - Texto para analisar
+   * Identificar boxes de informação em um texto
+   * @param {string} text - Texto para análise
    * @returns {Array} - Boxes identificados
    */
-  identifyInformationBoxes(text) {
+  identifyBoxes(text) {
     const boxes = [];
-    const boxRegex =
-      /(box|destaque|importante|saiba mais|curiosidade)[:\s]?\s*([^.!?]*?)(?=(?:\n\s*\n|box|destaque|importante|saiba mais|curiosidade|$))/gi;
+    const boxPattern = this.contentPatterns.boxPattern;
     let match;
 
-    while ((match = boxRegex.exec(text)) !== null) {
+    while ((match = boxPattern.exec(text)) !== null) {
       boxes.push({
-        type: 'information_box',
-        text: match[0].trim(),
-        content: match[2].trim(),
-        boxType: match[1].trim(),
-        confidence: 0.7,
+        type: 'box',
+        text: match[0],
+        confidence: 0.6,
       });
     }
 
@@ -406,312 +348,134 @@ class BookExtractor {
   }
 
   /**
-   * Extrair parágrafos normais do texto
-   * @param {string} fullText - Texto completo
-   * @param {Array} identifiedContent - Conteúdo já identificado
-   * @returns {Array} - Parágrafos extraídos
+   * Identificar resumos em um texto
+   * @param {string} text - Texto para análise
+   * @returns {Array} - Resumos identificados
    */
-  extractParagraphs(fullText, identifiedContent) {
-    let textToProcess = fullText;
+  identifySummaries(text) {
+    const summaries = [];
+    const summaryPattern = this.contentPatterns.summaryPattern;
+    let match;
 
-    // Remover o conteúdo já identificado do texto para extrair apenas parágrafos restantes
-    identifiedContent.forEach((item) => {
-      textToProcess = textToProcess.replace(item.text, '');
-    });
+    while ((match = summaryPattern.exec(text)) !== null) {
+      summaries.push({
+        type: 'summary',
+        text: match[0],
+        confidence: 0.7,
+      });
+    }
 
-    // Dividir o texto restante em parágrafos (separados por quebras de linha)
-    const paragraphs = textToProcess
-      .split(/\n\s*\n/)
-      .filter((p) => p.trim().length > 20) // Filtrar parágrafos muito curtos
-      .map((p) => ({
-        type: 'paragraph',
-        text: p.trim(),
-        confidence: 0.6,
-      }));
-
-    return paragraphs;
+    return summaries;
   }
 
   /**
-   * Converter conteúdo do livro em questões formatadas
-   * @param {Array} content - Conteúdo do livro
-   * @param {Object} bookInfo - Informações do livro
+   * Converter conteúdo processado em questões
+   * @param {Array} processedContent - Conteúdo processado
+   * @param {Object} bookInfo - Informações básicas do livro
    * @returns {Array} - Questões convertidas
    */
-  convertToQuestions(content, bookInfo) {
+  convertToQuestions(processedContent, bookInfo) {
     const questions = [];
 
-    // Converter exercícios identificados em questões
-    const exerciseContent = content.filter((c) => c.type === 'exercise');
+    for (const pageContent of processedContent) {
+      // Converter exercícios em questões
+      const exercises = pageContent.elements.filter(
+        (el) => el.type === 'exercise'
+      );
 
-    exerciseContent.forEach((exercise, index) => {
-      const question = this.convertExerciseToQuestion(exercise, bookInfo);
-      if (question) {
-        questions.push(question);
+      for (const exercise of exercises) {
+        questions.push({
+          type: 'exercise',
+          content: exercise.text,
+          materia: this.classifyContent(exercise.text, bookInfo.title),
+          pageNumber: pageContent.page,
+          confidence: exercise.confidence,
+        });
       }
-    });
 
-    // Também tentar converter exemplos em questões de fixação
-    const exampleContent = content.filter((c) => c.type === 'example');
+      // Converter definições em questões de compreensão
+      const definitions = pageContent.elements.filter(
+        (el) => el.type === 'definition'
+      );
 
-    exampleContent.forEach((example, index) => {
-      const question = this.convertExampleToQuestion(example, bookInfo);
-      if (question) {
-        questions.push(question);
+      for (const definition of definitions) {
+        questions.push({
+          type: 'comprehension',
+          content: `Explique o conceito de: ${definition.term}`,
+          answer: definition.text,
+          materia: this.classifyContent(definition.text, bookInfo.title),
+          pageNumber: pageContent.page,
+          confidence: definition.confidence,
+        });
       }
-    });
+
+      // Converter exemplos em questões de aplicação
+      const examples = pageContent.elements.filter(
+        (el) => el.type === 'example'
+      );
+
+      for (const example of examples) {
+        questions.push({
+          type: 'application',
+          content: `Como o conceito no exemplo "${example.content}" pode ser aplicado em uma situação real?`,
+          materia: this.classifyContent(example.content, bookInfo.title),
+          pageNumber: pageContent.page,
+          confidence: example.confidence,
+        });
+      }
+    }
 
     return questions;
   }
 
   /**
-   * Converter um exercício em uma questão formatada
-   * @param {Object} exercise - Exercício identificado
-   * @param {Object} bookInfo - Informações do livro
-   * @returns {Object|null} - Questão formatada ou null
+   * Classificar conteúdo por matéria
+   * @param {string} content - Conteúdo para classificar
+   * @param {string} bookTitle - Título do livro
+   * @returns {string} - Matéria identificada
    */
-  convertExerciseToQuestion(exercise, bookInfo) {
-    // Extrair alternativas se existirem (padrão A), B), C), etc.)
-    const alternativas = this.extractAlternatives(exercise.content);
-    const enunciado = this.extractQuestionStatement(
-      exercise.content,
-      alternativas
+  classifyContent(content, bookTitle) {
+    const contentLower = content.toLowerCase();
+    const titleLower = bookTitle.toLowerCase();
 
-    if (!enunciado || Object.keys(alternativas).length === 0) {
-      // Se não tiver alternativas, pode ser uma questão dissertativa
-      return {
-        numero: exercise.exerciseNumber || Math.floor(Math.random() * 10000),
-        enunciado: enunciado || exercise.content,
-        alternativas: {},
-        resposta_correta: null,
-        materia: bookInfo.disciplina || 'Não classificada',
-        ano_vestibular: bookInfo.ano || null,
-        origem: `Livro: ${bookInfo.titulo || 'Desconhecido'}`,
-        tipo: 'dissertativa',
-        nivel_dificuldade: this.estimateDifficulty(exercise.content),
-        origem_tipo: 'livro_didatico',
-      };
+    if (titleLower.includes('matemática') || contentLower.includes('matemática') || contentLower.includes('equação') || contentLower.includes('função')) {
+      return 'Matemática';
     }
 
-    // Para questões de múltipla escolha
-    return {
-      numero: exercise.exerciseNumber || Math.floor(Math.random() * 10000),
-      enunciado: enunciado,
-      alternativas: alternativas,
-      resposta_correta: null, // Sem resposta correta definida no livro
-      materia: bookInfo.disciplina || 'Não classificada',
-      ano_vestibular: bookInfo.ano || null,
-      origem: `Livro: ${bookInfo.titulo || 'Desconhecido'}`,
-      tipo: 'multipla_escolha',
-      nivel_dificuldade: this.estimateDifficulty(exercise.content),
-      origem_tipo: 'livro_didatico',
-    };
-  }
-
-  /**
-   * Converter um exemplo em uma questão de fixação
-   * @param {Object} example - Exemplo identificado
-   * @param {Object} bookInfo - Informações do livro
-   * @returns {Object|null} - Questão formatada ou null
-   */
-  convertExampleToQuestion(example, bookInfo) {
-    // Criar uma questão baseada no exemplo para fixação de conteúdo
-    const enunciado = `Com base no exemplo apresentado: "${example.example}", qual é a melhor aplicação deste conceito?`;
-
-    return {
-      numero: Math.floor(Math.random() * 10000),
-      enunciado: enunciado,
-      alternativas: {
-        A: 'Aplicação direta do exemplo',
-        B: 'Variação contextual do exemplo',
-        C: 'Generalização do princípio',
-        D: 'Análise crítica do exemplo',
-        E: 'Outra aplicação prática',
-      },
-      resposta_correta: null, // Ficará para validação humana
-      materia: bookInfo.disciplina || 'Não classificada',
-      ano_vestibular: bookInfo.ano || null,
-      origem: `Exemplo do livro: ${bookInfo.titulo || 'Desconhecido'}`,
-      tipo: 'fixacao_conceito',
-      nivel_dificuldade: 1, // Geralmente mais fácil
-      origem_tipo: 'livro_didatico',
-    };
-  }
-
-  /**
-   * Extrair alternativas de um conteúdo
-   * @param {string} content - Conteúdo para extrair alternativas
-   * @returns {Object} - Alternativas extraídas
-   */
-  extractAlternatives(content) {
-    const alternativas = {};
-    const altRegex =
-      /([A-E])\s*[)\.]?\s*([^A-E\n\r]*?)(?=\n|^\s*[A-E]\s*[)\.]?|$)/gi;
-    let match;
-
-    while ((match = altRegex.exec(content)) !== null) {
-      alternativas[match[1]] = match[2].trim();
+    if (titleLower.includes('física') || contentLower.includes('física') || contentLower.includes('força') || contentLower.includes('energia')) {
+      return 'Física';
     }
 
-    return alternativas;
-  }
-
-  /**
-   * Extrair o enunciado da questão (parte antes das alternativas)
-   * @param {string} content - Conteúdo completo
-   * @param {Object} alternativas - Alternativas identificadas
-   * @returns {string} - Enunciado da questão
-   */
-  extractQuestionStatement(content, alternativas) {
-    if (Object.keys(alternativas).length === 0) {
-      return content;
+    if (titleLower.includes('química') || contentLower.includes('química') || contentLower.includes('átomo') || contentLower.includes('reação')) {
+      return 'Química';
     }
 
-    // Encontrar a posição da primeira alternativa
-    const firstAltPos = content.search(/[A-E]\s*[)\.]/);
-
-    if (firstAltPos !== -1) {
-      return content.substring(0, firstAltPos).trim();
+    if (titleLower.includes('biologia') || contentLower.includes('biologia') || contentLower.includes('célula') || contentLower.includes('dna')) {
+      return 'Biologia';
     }
 
-    return content;
-  }
-
-  /**
-   * Estimar dificuldade de uma questão com base no conteúdo
-   * @param {string} content - Conteúdo da questão
-   * @returns {number} - Nível de dificuldade (1-3)
-   */
-  estimateDifficulty(content) {
-    // Análise simples baseada em palavras-chave de dificuldade
-    const difficultTerms = [
-      'demonstrar',
-      'provar',
-      'elaborar',
-      'analisar criticamente',
-      'comparar e contrastar',
-    ];
-    const complexTerms = [
-      'relacionar',
-      'inferir',
-      'interpretar',
-      'aplicar',
-      'resolver',
-
-    const textLower = content.toLowerCase();
-    const difficultCount = difficultTerms.filter((term) =>
-      textLower.includes(term.toLowerCase())
-    ).length;
-    const complexCount = complexTerms.filter((term) =>
-      textLower.includes(term.toLowerCase())
-    ).length;
-
-    if (difficultCount > 0) return 3; // Difícil
-    if (complexCount > 0) return 2; // Médio
-    return 1; // Fácil
-  }
-
-  /**
-   * Processar uma pasta inteira de livros didáticos
-   * @param {string} booksDir - Diretório com os livros
-   * @returns {Promise<Array>} - Resultados de todas as extrações
-   */
-  async processBooksDirectory(booksDir) {
-    try {
-      if (!fs.existsSync(booksDir)) {
-        throw new Error(`Diretório não encontrado: ${booksDir}`);
-      }
-
-      const files = fs.readdirSync(booksDir);
-      const pdfFiles = files.filter(
-        (file) =>
-          path.extname(file).toLowerCase() === '.pdf' &&
-          !file.toLowerCase().includes('gabarito') &&
-          !file.toLowerCase().includes('solucionario')
-      );
-
-      const results = [];
-
-      for (const fileName of pdfFiles) {
-        const filePath = path.join(booksDir, fileName);
-
-        try {
-          // Extrair informações do nome do arquivo
-          const bookInfo = this.extractBookInfoFromFilename(fileName);
-
-          console.log(`Processando livro: ${fileName}`);
-          const result = await this.extract(filePath, bookInfo);
-          results.push(result);
-
-          console.log(
-            `Livro processado com sucesso: ${fileName} (${result.questions.length} questões extraídas)`
-          );
-        } catch (error) {
-          console.error(`Erro ao processar livro ${fileName}:`, error.message);
-          results.push({
-            filename: fileName,
-            error: error.message,
-            success: false,
-          });
-        }
-      }
-
-      return results;
-    } catch (error) {
-      console.error('Erro ao processar diretório de livros:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Extrair informações do livro a partir do nome do arquivo
-   * @param {string} filename - Nome do arquivo
-   * @returns {Object} - Informações extraídas
-   */
-  extractBookInfoFromFilename(filename) {
-    const info = {};
-    const cleanName = path.basename(filename, '.pdf');
-
-    // Tentar extrair ano
-    const yearMatch = cleanName.match(/(20\d{2})|(\d{4})/);
-    if (yearMatch) {
-      info.ano = parseInt(yearMatch[0]);
+    if (titleLower.includes('história') || contentLower.includes('história') || contentLower.includes('brasil') || contentLower.includes('revolução')) {
+      return 'História';
     }
 
-    // Tentar inferir disciplina
-    const subjectKeywords = {
-      matematica: ['matemática', 'matematica', 'math', 'algebra', 'geometria'],
-      portugues: [
-        'português',
-        'portugues',
-        'gramática',
-        'gramatica',
-        'lingua',
-        'literatura',
-      ],
-      historia: ['história', 'historia', 'historico'],
-      geografia: ['geografia', 'geo'],
-      fisica: ['física', 'fisica', 'physics'],
-      quimica: ['química', 'quimica', 'chemistry'],
-      biologia: ['biologia', 'bio'],
-      ingles: ['inglês', 'ingles', 'english'],
-    };
-
-    for (const [subject, keywords] of Object.entries(subjectKeywords)) {
-      for (const keyword of keywords) {
-        if (cleanName.toLowerCase().includes(keyword.toLowerCase())) {
-          info.disciplina = subject;
-          break;
-        }
-      }
-      if (info.disciplina) break;
+    if (titleLower.includes('geografia') || contentLower.includes('geografia') || contentLower.includes('clima') || contentLower.includes('população')) {
+      return 'Geografia';
     }
 
-    info.titulo = cleanName;
-    info.origem = 'livro_didatico';
+    if (titleLower.includes('português') || titleLower.includes('linguagem') || contentLower.includes('literatura') || contentLower.includes('gramática')) {
+      return 'Linguagens e Códigos';
+    }
 
-    return info;
+    if (contentLower.includes('filosofia') || contentLower.includes('ético') || contentLower.includes('moral')) {
+      return 'Filosofia';
+    }
+
+    if (contentLower.includes('sociologia') || contentLower.includes('sociedade') || contentLower.includes('cultura')) {
+      return 'Sociologia';
+    }
+
+    return 'Não classificada';
   }
 }
 
-module.exports = new BookExtractor();
+export default new BookExtractor();

@@ -3,8 +3,8 @@
  * Monitora métricas e envia alertas quando thresholds são excedidos
  */
 
-const { logger, securityLogger } = require('./logger');
-const notificationService = require('./notificationService');
+import { logger, securityLogger } from './logger.js';
+import notificationService from './notificationService.js';
 
 class AlertService {
   constructor() {
@@ -576,4 +576,5 @@ Metadados: ${JSON.stringify(notificationData.metadata, null, 2)}
   }
 }
 
-module.exports = AlertService;
+export default AlertService;
+

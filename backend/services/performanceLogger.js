@@ -3,9 +3,14 @@
  * Monitora métricas de sistema, tempo de resposta e uso de recursos
  */
 
-const { performanceLogger, logger } = require('./logger');
-const os = require('os');
-const performance = require('performance-now');
+import { performanceLogger, logger } from './logger.js';
+import os from 'os';
+import performance from 'performance-now';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Classe para monitoramento de métricas de sistema
 class SystemMetrics {
@@ -473,12 +478,5 @@ const generatePerformanceReport = (systemMetrics, requestMonitor) => {
   };
 };
 
-module.exports = {
-  SystemMetrics,
-  RequestPerformanceMonitor,
-  measureAsyncExecution,
-  measureSyncExecution,
-  performanceMonitoringMiddleware,
-  getCurrentMetrics,
-  generatePerformanceReport,
-};
+export { SystemMetrics, getCurrentMetrics, performanceMonitoringMiddleware };
+

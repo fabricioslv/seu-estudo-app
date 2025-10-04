@@ -145,18 +145,71 @@ const LivrosDidaticosPage = () => {
   return (
     <div className="livros-page">
       <div className="livros-header">
-        <h1>Livros Didáticos</h1>
-        <p>Conteúdo educacional extraído de livros didáticos</p>
+        <h1>Processamento Inteligente de Livros</h1>
+        <p>Envie seus livros didáticos em PDF e nossa IA extrairá automaticamente questões, conceitos e conteúdo estruturado para otimizar seus estudos</p>
+      </div>
+
+      {/* Seção de destaque para processamento com IA */}
+      <div className="upload-section">
+        <div className="upload-container">
+          <h2>🤖 Processamento com Inteligência Artificial</h2>
+          <p>Envie seus livros didáticos em formato PDF e nossa IA fará a extração automática de:</p>
+
+          <div className="ai-features">
+            <div className="ai-feature">
+              <span className="feature-icon">📝</span>
+              <div>
+                <h3>Questões Automáticas</h3>
+                <p>Identificação e extração de exercícios e questões</p>
+              </div>
+            </div>
+            <div className="ai-feature">
+              <span className="feature-icon">📚</span>
+              <div>
+                <h3>Resumos Inteligentes</h3>
+                <p>Geração automática de resumos por capítulo</p>
+              </div>
+            </div>
+            <div className="ai-feature">
+              <span className="feature-icon">🏷️</span>
+              <div>
+                <h3>Categorização</h3>
+                <p>Classificação por matéria, tópico e nível de dificuldade</p>
+              </div>
+            </div>
+            <div className="ai-feature">
+              <span className="feature-icon">✨</span>
+              <div>
+                <h3>Metadados</h3>
+                <p>Extração de conceitos-chave e palavras importantes</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="upload-actions">
+            <button className="btn-primary btn-large" onClick={() => document.getElementById('file-upload').click()}>
+              📁 Enviar Livro Didático
+            </button>
+            <input
+              id="file-upload"
+              type="file"
+              accept=".pdf"
+              style={{ display: 'none' }}
+              onChange={(e) => console.log('Arquivo selecionado:', e.target.files[0])}
+            />
+            <p className="upload-hint">Formatos aceitos: PDF | Tamanho máximo: 50MB</p>
+          </div>
+        </div>
       </div>
 
       <div className="abas-livros">
-        <button 
+        <button
           className={`aba ${abaAtiva === 'estatisticas' ? 'ativa' : ''}`}
           onClick={() => setAbaAtiva('estatisticas')}
         >
           Estatísticas
         </button>
-        <button 
+        <button
           className={`aba ${abaAtiva === 'conteudo' ? 'ativa' : ''}`}
           onClick={() => setAbaAtiva('conteudo')}
           disabled={!conteudoLivro}

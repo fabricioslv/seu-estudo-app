@@ -1,9 +1,9 @@
-// scripts/categorizarQuestoesEnem.js
+// scripts/categorizarQuestoesEnem.mjs
 // Script para categorizar automaticamente questões do ENEM
 
-require('dotenv').config({ path: './.env' });
-const db = require('../db');
-const categorizador = require('../services/categorizacaoEnem');
+import 'dotenv/config';
+import db from '../db/index.mjs';
+import { categorizador } from '../services/categorizacaoEnem.mjs';
 
 class CategorizadorAutomatico {
   constructor() {
@@ -17,6 +17,7 @@ class CategorizadorAutomatico {
     try {
       console.log(
         'Iniciando categorização automática de todas as questões do ENEM...'
+      );
 
       // Obter todas as questões do ENEM
       const result = await db.query(
@@ -26,6 +27,7 @@ class CategorizadorAutomatico {
       const questoes = result.rows;
       console.log(
         `Encontradas ${questoes.length} questões do ENEM para categorizar.`
+      );
 
       if (questoes.length === 0) {
         console.log('Nenhuma questão do ENEM encontrada para categorizar.');
@@ -37,6 +39,7 @@ class CategorizadorAutomatico {
         const batch = questoes.slice(i, i + this.batchSize);
         console.log(
           `Processando lote ${Math.floor(i / this.batchSize) + 1} de ${Math.ceil(questoes.length / this.batchSize)}...`
+        );
 
         await this.processarLote(batch);
 
@@ -117,6 +120,7 @@ class CategorizadorAutomatico {
 
       console.log(
         `Lote processado: ${questoesBatch.length} questões categorizadas e atualizadas.`
+      );
 
     } catch (error) {
       console.error('Erro ao processar lote:', error);
@@ -137,6 +141,7 @@ class CategorizadorAutomatico {
       );
       console.log(
         `Total de questões categorizadas: ${totalResult.rows[0].total}`
+      );
 
       // Distribuição por matéria
       const materiasResult = await db.query(`
@@ -241,9 +246,10 @@ class CategorizadorAutomatico {
 
       console.log(
         `Iniciando categorização de ${ids.length} questões específicas...`
+      );
 
       // Obter as questões específicas
-      const placeholders = ids.map((_, index) => `$${index + 1}`).join(', ');
+      const placeholders = ids.map((_, index) => `${index + 1}`).join(', ');
       const result = await db.query(
         `SELECT * FROM questoes WHERE id IN (${placeholders})`,
         ids
@@ -264,6 +270,7 @@ class CategorizadorAutomatico {
         const batch = questoes.slice(i, i + batchSize);
         console.log(
           `Processando lote ${Math.floor(i / batchSize) + 1} de ${Math.ceil(questoes.length / batchSize)}...`
+        );
 
         await this.processarLote(batch);
       }

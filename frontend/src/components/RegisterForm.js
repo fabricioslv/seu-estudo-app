@@ -5,16 +5,22 @@ import authService from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 
 const RegisterForm = () => {
-  const [formData, setFormData] = useState({
-    nome: '',
-    email: '',
-    senha: '',
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+    console.log('[DEBUG] RegisterForm: Iniciando componente...');
 
-  const navigate = useNavigate();
-  const { login } = useAuth();
+    const [formData, setFormData] = useState({
+      nome: '',
+      email: '',
+      senha: '',
+    });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    console.log('[DEBUG] RegisterForm: Estado inicial configurado');
+
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    console.log('[DEBUG] RegisterForm: Hooks inicializados - navigate:', !!navigate, 'login:', !!login);
 
   const { nome, email, senha } = formData;
 
@@ -38,22 +44,36 @@ const RegisterForm = () => {
     }
   };
 
+  const getPasswordStrength = () => {
+    if (senha.length === 0) return '';
+    if (senha.length < 6) return 'weak';
+    if (senha.length < 8) return 'medium';
+    return 'strong';
+  };
+
   return (
-    <form onSubmit={onSubmit}>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      
-      <div>
-        <label htmlFor="nome">Nome</label>
+    <form onSubmit={onSubmit} className="modern-register-form">
+      {error && (
+        <div className="alert alert-error">
+          {error}
+        </div>
+      )}
+
+      <div className="form-group">
+        <label htmlFor="nome">Nome completo</label>
         <input
           type="text"
           id="nome"
           name="nome"
           value={nome}
           onChange={onChange}
+          className={error && error.includes('nome') ? 'error' : ''}
+          placeholder="Seu nome completo"
           required
         />
       </div>
-      <div>
+
+      <div className="form-group">
         <label htmlFor="email">Email</label>
         <input
           type="email"
@@ -61,10 +81,13 @@ const RegisterForm = () => {
           name="email"
           value={email}
           onChange={onChange}
+          className={error && error.includes('email') ? 'error' : ''}
+          placeholder="seu@email.com"
           required
         />
       </div>
-      <div>
+
+      <div className="form-group">
         <label htmlFor="senha">Senha</label>
         <input
           type="password"
@@ -72,12 +95,19 @@ const RegisterForm = () => {
           name="senha"
           value={senha}
           onChange={onChange}
+          className={error && error.includes('senha') ? 'error' : ''}
+          placeholder="••••••••"
           minLength="6"
           required
         />
       </div>
-      <button type="submit" disabled={loading}>
-        {loading ? 'Registrando...' : 'Registrar'}
+
+      <button
+        type="submit"
+        className="btn btn-primary btn-block"
+        disabled={loading}
+      >
+        {loading ? 'Criando conta...' : 'Criar conta'}
       </button>
     </form>
   );

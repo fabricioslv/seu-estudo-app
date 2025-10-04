@@ -82,7 +82,7 @@ router.get('/:id/questoes', requireAuth, async (req, res) => {
       ORDER BY sq.id
     `,
       [id]
-
+    );
     // Iniciar uma sessão de simulado para o usuário (registrar início)
     await db.query(
       `INSERT INTO sessoes_simulado (usuario_id, simulado_id, data_inicio, status) VALUES ($1, $2, $3, $4) RETURNING id`,
@@ -122,6 +122,7 @@ router.post('/:id/responder', requireAuth, async (req, res) => {
       LIMIT 1
     `,
       [req.user.id]
+    );
 
     if (simuladoAtivo.rows.length === 0) {
       return res
@@ -142,7 +143,7 @@ router.post('/:id/responder', requireAuth, async (req, res) => {
       const questao = await db.query(
         'SELECT resposta_correta FROM questoes WHERE id = $1',
         [questao_id]
-
+      ); // <-- ADICIONE O PONTO E VÍRGULA AQUI
       if (questao.rows.length === 0) {
         continue; // Pular questão não encontrada
       }
@@ -157,7 +158,7 @@ router.post('/:id/responder', requireAuth, async (req, res) => {
         VALUES ($1, $2, $3, $4)
       `,
         [simuladoId, questao_id, resposta_usuario, esta_correta]
-
+      );
       // Registrar a resposta individualmente também para gamificação
       await questoesResolucaoService.registrarResposta(
         req.user.id,
@@ -185,6 +186,7 @@ router.post('/:id/responder', requireAuth, async (req, res) => {
       WHERE id = $2
     `,
       [new Date(), simuladoId]
+    );
 
     // Calcular pontuação
     const simulado = await db.query(
@@ -201,7 +203,7 @@ router.post('/:id/responder', requireAuth, async (req, res) => {
       req.user.id,
       'finalizacao_simulado',
       5
-
+    );
     res.json({
       success: true,
       msg: 'Respostas registradas com sucesso!',
@@ -237,7 +239,7 @@ router.get('/historico', requireAuth, async (req, res) => {
       ORDER BY ss.data_inicio DESC
     `,
       [req.user.id]
-
+    );
     // Calcular porcentagens
     const historicoComPorcentagem = historico.rows.map((item) => ({
       ...item,
@@ -276,7 +278,7 @@ router.get('/estatisticas', requireAuth, async (req, res) => {
       GROUP BY ss.id
     `,
       [req.user.id]
-
+    );
     // Estatísticas por matéria
     const statsPorMateria = await db.query(
       `
@@ -293,6 +295,7 @@ router.get('/estatisticas', requireAuth, async (req, res) => {
       ORDER BY porcentagem_acerto DESC
     `,
       [req.user.id]
+    );
 
     res.json({
       success: true,

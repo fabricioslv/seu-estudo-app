@@ -1,20 +1,20 @@
-// services/gamificacaoService.js - Serviço para lógica de gamificação
+// services/gamificacaoService.js - ServiÃƒÂ§o para lÃƒÂ³gica de gamificaÃƒÂ§ÃƒÂ£o
 const db = require('../db');
 
 class GamificacaoService {
   /**
-   * Adiciona pontos ao usuário e atualiza seu nível
-   * @param {number} usuarioId - ID do usuário
+   * Adiciona pontos ao usuÃƒÂ¡rio e atualiza seu nÃƒÂ­vel
+   * @param {number} usuarioId - ID do usuÃƒÂ¡rio
    * @param {number} pontos - Quantidade de pontos a adicionar
    * @param {string} tipo - Tipo de ponto ('geral', 'estudo', 'simulado', etc.)
    */
   async adicionarPontos(usuarioId, pontos, tipo = 'geral') {
     if (!pontos || pontos <= 0) {
-      throw new Error('Quantidade de pontos inválida.');
+      throw new Error('Quantidade de pontos invÃƒÂ¡lida.');
     }
 
     try {
-      // Verificar se já existe um registro para esse usuário e tipo de ponto
+      // Verificar se jÃƒÂ¡ existe um registro para esse usuÃƒÂ¡rio e tipo de ponto
       const checkQuery = `
         SELECT pontos, nivel, experiencia FROM pontos_usuario 
         WHERE usuario_id = $1 AND tipo_ponto = $2
@@ -29,7 +29,7 @@ class GamificacaoService {
         const currentPontos = checkResult.rows[0].pontos;
         novoTotal = currentPontos + pontos;
 
-        // Calcular nível (a cada 100 pontos de experiência, sobe 1 nível)
+        // Calcular nÃƒÂ­vel (a cada 100 pontos de experiÃƒÂªncia, sobe 1 nÃƒÂ­vel)
         novoNivel = Math.floor(novoTotal / 100) + 1;
         novaExperiencia = novoTotal % 100;
 
@@ -87,13 +87,13 @@ class GamificacaoService {
   }
 
   /**
-   * Verifica se o usuário obteve novas conquistas com base nos pontos atuais
-   * @param {number} usuarioId - ID do usuário
-   * @param {number} pontosAtuais - Total de pontos atuais do usuário
+   * Verifica se o usuÃƒÂ¡rio obteve novas conquistas com base nos pontos atuais
+   * @param {number} usuarioId - ID do usuÃƒÂ¡rio
+   * @param {number} pontosAtuais - Total de pontos atuais do usuÃƒÂ¡rio
    */
   async verificarConquistas(usuarioId, pontosAtuais) {
     try {
-      // Buscar conquistas que requerem menos ou igual ao número de pontos do usuário
+      // Buscar conquistas que requerem menos ou igual ao nÃƒÂºmero de pontos do usuÃƒÂ¡rio
       const conquistasQuery = `
         SELECT c.id, c.nome, c.descricao, c.icone
         FROM conquistas c
@@ -104,6 +104,7 @@ class GamificacaoService {
       const conquistasResult = await db.query(conquistasQuery, [
         usuarioId,
         pontosAtuais,
+      ]);
 
       if (conquistasResult.rows.length > 0) {
         // Registrar as conquistas obtidas
@@ -125,12 +126,12 @@ class GamificacaoService {
   }
 
   /**
-   * Atualiza o ranking dos usuários
-   * @param {string} periodo - Período do ranking ('geral', 'mensal', 'semanal')
+   * Atualiza o ranking dos usuÃƒÂ¡rios
+   * @param {string} periodo - PerÃƒÂ­odo do ranking ('geral', 'mensal', 'semanal')
    */
   async atualizarRanking(periodo = 'geral') {
     try {
-      // Primeiro, limpar o ranking existente para o período
+      // Primeiro, limpar o ranking existente para o perÃƒÂ­odo
       await db.query('DELETE FROM ranking WHERE periodo = $1', [periodo]);
 
       // Calcular o ranking com base nos pontos gerais
@@ -170,8 +171,8 @@ class GamificacaoService {
   }
 
   /**
-   * Registra uma atividade do usuário que pode gerar pontos de gamificação
-   * @param {number} usuarioId - ID do usuário
+   * Registra uma atividade do usuÃƒÂ¡rio que pode gerar pontos de gamificaÃƒÂ§ÃƒÂ£o
+   * @param {number} usuarioId - ID do usuÃƒÂ¡rio
    * @param {string} tipoAtividade - Tipo de atividade ('resolucao_questao', 'finalizacao_simulado', etc.)
    * @param {number} pontosBase - Pontos base da atividade
    */
@@ -200,12 +201,12 @@ class GamificacaoService {
           pontosAdicionados = 1;
       }
 
-      // Adicionar os pontos ao usuário
+      // Adicionar os pontos ao usuÃƒÂ¡rio
       const result = await this.adicionarPontos(usuarioId, pontosAdicionados);
 
       // Atualizar o ranking periodicamente
       if (Math.random() < 0.1) {
-        // Apenas atualizar ranking em 10% das vezes para eficiência
+        // Apenas atualizar ranking em 10% das vezes para eficiÃƒÂªncia
         await this.atualizarRanking('geral');
       }
 
@@ -221,12 +222,12 @@ class GamificacaoService {
   }
 
   /**
-   * Obtém estatísticas de gamificação para um usuário
-   * @param {number} usuarioId - ID do usuário
+   * ObtÃƒÂ©m estatÃƒÂ­sticas de gamificaÃƒÂ§ÃƒÂ£o para um usuÃƒÂ¡rio
+   * @param {number} usuarioId - ID do usuÃƒÂ¡rio
    */
   async getEstatisticasUsuario(usuarioId) {
     try {
-      // Obter pontos do usuário
+      // Obter pontos do usuÃƒÂ¡rio
       const pontosQuery = `
         SELECT tipo_ponto, pontos, nivel, experiencia, ultima_atualizacao
         FROM pontos_usuario
@@ -234,7 +235,7 @@ class GamificacaoService {
       `;
       const pontosResult = await db.query(pontosQuery, [usuarioId]);
 
-      // Obter conquistas do usuário
+      // Obter conquistas do usuÃƒÂ¡rio
       const conquistasQuery = `
         SELECT c.nome, c.descricao, c.icone, cu.data_obtencao
         FROM conquistas_usuario cu
@@ -244,7 +245,7 @@ class GamificacaoService {
       `;
       const conquistasResult = await db.query(conquistasQuery, [usuarioId]);
 
-      // Obter posição no ranking
+      // Obter posiÃƒÂ§ÃƒÂ£o no ranking
       const rankingQuery = `
         SELECT posicao, pontos_totais
         FROM ranking
@@ -260,7 +261,7 @@ class GamificacaoService {
         totalConquistas: conquistasResult.rows.length,
       };
     } catch (error) {
-      console.error('Erro ao obter estatísticas do usuário:', error);
+      console.error('Erro ao obter estatÃƒÂ­sticas do usuÃƒÂ¡rio:', error);
       throw error;
     }
   }

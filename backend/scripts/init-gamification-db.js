@@ -172,6 +172,7 @@ async function initializeDB() {
     await db.query(createTablesQuery);
     console.log(
       '✅ Todas as tabelas criadas/atualizadas com sucesso (ou já existentes).'
+    );
 
     // Verificar se as tabelas foram criadas corretamente
     const tables = [
@@ -188,7 +189,7 @@ async function initializeDB() {
       'participacoes_desafio',
     ];
 
-    console.log('\n📊 Verificando tabelas criadas:');
+    console.log('\\n📊 Verificando tabelas criadas:');
     for (const table of tables) {
       const result = await db.query(
         "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = $1) as exists",
@@ -202,15 +203,17 @@ async function initializeDB() {
       'SELECT COUNT(*) as count FROM conquistas'
     );
     console.log(
-      `\n🎁 Total de conquistas padrão: ${conquistasResult.rows[0].count}`
+      `\\n🎁 Total de conquistas padrão: ${conquistasResult.rows[0].count}`
+    );
 
-    console.log('\n🎉 Banco de dados inicializado com sucesso!');
-    console.log('\n📋 Próximos passos:');
+    console.log('\\n🎉 Banco de dados inicializado com sucesso!');
+    console.log('\\n📋 Próximos passos:');
     console.log('   - Iniciar o servidor backend: node index.js');
     console.log('   - Iniciar o frontend: cd frontend && npm start');
     console.log('   - Acesse a API em: http://localhost:6001/api');
     console.log(
       '   - Novas rotas de gamificação disponíveis em: http://localhost:6001/api/gamificacao'
+    );
 
   } catch (err) {
     console.error('❌ Erro ao criar as tabelas:', err);

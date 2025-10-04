@@ -1,7 +1,7 @@
 // services/extractors/unifiedExtractor.js
-const fs = require('fs');
-const path = require('path');
-const pdfParse = require('pdf-parse');
+import fs from 'fs';
+import path from 'path';
+import pdfParse from 'pdf-parse';
 
 class UnifiedExtractor {
   constructor() {
@@ -429,6 +429,7 @@ class UnifiedExtractor {
         'movimento social',
         'trabalho',
       ],
+    };
 
     // Check each subject
     for (const [materia, keywords] of Object.entries(materiaKeywords)) {
@@ -482,6 +483,7 @@ class UnifiedExtractor {
       'relacionar',
       'justificar',
       'argumentar',
+    ];
 
     for (const word of words) {
       if (complexTerms.some((term) => word.toLowerCase().includes(term))) {
@@ -545,4 +547,4 @@ class UnifiedExtractor {
   }
 }
 
-module.exports = new UnifiedExtractor();
+export default new UnifiedExtractor();

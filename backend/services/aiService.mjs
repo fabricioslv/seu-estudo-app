@@ -320,3 +320,4 @@ class AIService {
 
 // Criar uma instância do serviço e exportar
 module.exports = new AIService();
+

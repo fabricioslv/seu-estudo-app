@@ -20,11 +20,13 @@ class ImportadorQuestoesEnem {
     try {
       console.log(
         `Iniciando importação de questões do ENEM ${ano}${materia ? ` - Matéria: ${materia}` : ''}...`
+      );
 
       // Obter questões da API
       const questoes = await enemApiService.getQuestoesPorAnoEMateria(
         ano,
         materia
+      );
 
       if (!questoes || questoes.length === 0) {
         console.log(
@@ -76,6 +78,7 @@ class ImportadorQuestoesEnem {
               questao.caderno,
               questao.cor,
             ]
+          );
 
           importadas++;
         } catch (err) {
@@ -89,6 +92,7 @@ class ImportadorQuestoesEnem {
 
       console.log(
         `Importação concluída para ENEM ${ano}: ${importadas} novas, ${jaExistentes} já existentes`
+      );
 
     } catch (error) {
       console.error(`Erro ao importar questões do ENEM ${ano}:`, error);
@@ -171,6 +175,7 @@ class ImportadorQuestoesEnem {
               questao.caderno,
               questao.cor,
             ]
+          );
 
           importadas++;
         } catch (err) {
@@ -184,6 +189,7 @@ class ImportadorQuestoesEnem {
 
       console.log(
         `Importação completa para ENEM ${ano}: ${importadas} novas, ${jaExistentes} já existentes`
+      );
 
     } catch (error) {
       console.error(

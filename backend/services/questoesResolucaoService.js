@@ -41,7 +41,8 @@ class QuestoesResolucaoService {
         questaoId,
         resposta,
         isCorreta,
-        tempoResposta,
+        tempoResposta
+      );
 
       // Atualizar estatísticas do usuário
       const atividade = isCorreta ? 'acerto_questao' : 'resolucao_questao';
@@ -52,6 +53,7 @@ class QuestoesResolucaoService {
         usuarioId,
         atividade,
         pontosBase
+      );
 
       // Dar bônus por tempo rápido
       if (tempoResposta < 30) {
@@ -267,3 +269,5 @@ class QuestoesResolucaoService {
 }
 
 module.exports = new QuestoesResolucaoService();
+
+

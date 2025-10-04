@@ -1,8 +1,8 @@
 // services/extractors/enhancedExtractor.js
-const fs = require('fs');
-const path = require('path');
-const pdfParse = require('pdf-parse');
-const enemApiService = require('../enemApiService');
+import fs from 'fs';
+import path from 'path';
+import pdfParse from 'pdf-parse';
+import enemApiService from '../enemApiService.js';
 
 class EnhancedExtractor {
   constructor() {
@@ -131,6 +131,7 @@ class EnhancedExtractor {
         // Less than 50% of questions have good alternativas, try layout extraction as alternative
         console.log(
           `Taxa baixa de alternativas detectadas (${questoesComAlternativas.length}/${questoes.length}), tentando extração com layout...`
+        );
 
         try {
           const layoutResult = await layoutExtractor.extract(
@@ -141,6 +142,7 @@ class EnhancedExtractor {
             // Compare which extraction has better alternativa detection
             const layoutQuestoesComAlternativas = layoutResult.questoes.filter(
               (q) => Object.keys(q.alternativas).length >= 4
+            );
 
             if (
               layoutQuestoesComAlternativas.length >
@@ -1063,4 +1065,5 @@ class EnhancedExtractor {
   }
 }
 
-module.exports = new EnhancedExtractor();
+export default new EnhancedExtractor();
+

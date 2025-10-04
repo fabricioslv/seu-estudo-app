@@ -77,6 +77,13 @@
   margin-bottom: var(--spacing-4);
 }
 
+.progress-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary-500);
+  font-weight: var(--font-weight-semibold);
+  margin-top: var(--spacing-1);
+}
+
 .progress-bar {
   height: 12px;
   background: var(--color-bg-tertiary);

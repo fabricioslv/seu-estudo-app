@@ -1,46 +1,65 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import ProfilePage from './pages/ProfilePage';
-import SimuladosPage from './pages/SimuladosPage';
-import CreateSimuladoPage from './pages/CreateSimuladoPage';
-import ResponderSimuladoPage from './pages/ResponderSimuladoPage';
-import ResultadosSimuladoPage from './pages/ResultadosSimuladoPage';
-import EstudarPage from './pages/EstudarPage';
-import TestsPage from './pages/TestsPage';
-import LivrosDidaticosPage from './pages/LivrosDidaticosPage';
-import AprendendoPage from './pages/AprendendoPage';
-import GamificacaoAprendendo from './pages/GamificacaoAprendendo';
-import ProfessorDashboardPage from './pages/ProfessorDashboardPage';
-import ProfessorCreateSimuladoPage from './pages/ProfessorCreateSimuladoPage';
-import NotificationsPage from './pages/NotificationsPage';
-import MensagensPage from './pages/MensagensPage';
-import MinhasNotasPage from './pages/MinhasNotasPage';
-import GerenciarAvaliacoesPage from './pages/professor/GerenciarAvaliacoesPage';
-import LancarNotasPage from './pages/professor/LancarNotasPage';
-import EncontrarTutoresPage from './pages/EncontrarTutoresPage';
-import TornarTutorPage from './pages/TornarTutorPage';
-import MinhasSessoesPage from './pages/MinhasSessoesPage';
+
 import './styles/main.css';
+
+// Componente de loading para mostrar enquanto as páginas carregam
+const LoadingSpinner = () => (
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '200px',
+    fontSize: '18px',
+    color: '#666'
+  }}>
+    <div>Carregando...</div>
+  </div>
+);
+
+// Lazy loading das páginas para melhorar performance
+const HomePage = lazy(() => import('./pages/HomePage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const SimuladosPage = lazy(() => import('./pages/SimuladosPage'));
+const CreateSimuladoPage = lazy(() => import('./pages/CreateSimuladoPage'));
+const ResponderSimuladoPage = lazy(() => import('./pages/ResponderSimuladoPage'));
+const ResultadosSimuladoPage = lazy(() => import('./pages/ResultadosSimuladoPage'));
+const EstudarPage = lazy(() => import('./pages/EstudarPage'));
+const TestsPage = lazy(() => import('./pages/TestsPage'));
+const LivrosDidaticosPage = lazy(() => import('./pages/LivrosDidaticosPage'));
+const AprendendoPage = lazy(() => import('./pages/AprendendoPage'));
+const GamificacaoAprendendo = lazy(() => import('./pages/GamificacaoAprendendo'));
+const ProfessorDashboardPage = lazy(() => import('./pages/ProfessorDashboardPage'));
+const ProfessorCreateSimuladoPage = lazy(() => import('./pages/ProfessorCreateSimuladoPage'));
+const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
+const MensagensPage = lazy(() => import('./pages/MensagensPage'));
+const MinhasNotasPage = lazy(() => import('./pages/MinhasNotasPage'));
+const GerenciarAvaliacoesPage = lazy(() => import('./pages/professor/GerenciarAvaliacoesPage'));
+const LancarNotasPage = lazy(() => import('./pages/professor/LancarNotasPage'));
+const EncontrarTutoresPage = lazy(() => import('./pages/EncontrarTutoresPage'));
+const TornarTutorPage = lazy(() => import('./pages/TornarTutorPage'));
+const MinhasSessoesPage = lazy(() => import('./pages/MinhasSessoesPage'));
 
 // Adicionando logs de diagnóstico para identificar problemas de inicialização
 console.log('[DEBUG] App.js sendo inicializado...');
 console.log('[DEBUG] Router sendo inicializado no App.js');
 console.log('[DEBUG] Ambiente atual:', process.env.NODE_ENV);
 console.log('[DEBUG] Variáveis de ambiente carregadas');
+
 function App() {
   return (
     <AuthProvider>
       <div className="App">
-          <Navbar />
-          <main className="main-content">
+        <Navbar />
+        <main className="main-content">
+          <Suspense fallback={<LoadingSpinner />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/entrar" element={<LoginPage />} />
@@ -67,9 +86,10 @@ function App() {
               <Route path="/professor/avaliacoes/:id/lancar-notas" element={<PrivateRoute><LancarNotasPage /></PrivateRoute>} />
               <Route path="/professor/simulados/criar" element={<PrivateRoute><ProfessorCreateSimuladoPage /></PrivateRoute>} />
             </Routes>
-          </main>
-          <Footer />
-        </div>
+          </Suspense>
+        </main>
+        <Footer />
+      </div>
     </AuthProvider>
   );
 }

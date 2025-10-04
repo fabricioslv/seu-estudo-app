@@ -260,6 +260,7 @@ class EnemApiService {
   getQuestoesMock(ano, materia) {
     console.warn(
       `Usando dados mock para ano ${ano}, matéria ${materia}. API não disponível.`
+    );
 
     // Criar algumas questões mock com base no ano e matéria
     const questoes = [];
@@ -299,6 +300,7 @@ class EnemApiService {
   getTodasQuestoesMock(ano) {
     console.warn(
       `Usando dados mock para todas as questões do ENEM ${ano}. API não disponível.`
+    );
 
     const questoes = [];
     const materias = [
@@ -306,6 +308,7 @@ class EnemApiService {
       'Ciências Humanas',
       'Ciências da Natureza',
       'Matemática',
+    ];
 
     // Criar 45 questões para cada matéria (modelado após o ENEM real)
     for (let materiaIdx = 0; materiaIdx < materias.length; materiaIdx++) {
@@ -345,3 +348,4 @@ class EnemApiService {
 
 // Criar e exportar uma instância do serviço
 module.exports = new EnemApiService();
+

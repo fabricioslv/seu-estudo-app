@@ -3,7 +3,7 @@
  * Captura e categoriza todos os tipos de erro no sistema
  */
 
-const { logger, securityLogger, systemLogger } = require('../services/logger');
+import { logger, securityLogger, systemLogger } from '../services/logger.js';
 
 // Classe base para erros customizados
 class AppError extends Error {
@@ -278,7 +278,7 @@ const securityMonitor = (req, res, next) => {
   next();
 };
 
-module.exports = {
+export {
   errorHandler,
   notFoundHandler,
   asyncErrorHandler,

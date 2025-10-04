@@ -13,7 +13,7 @@ const { logger, performanceLogger } = require('../services/logger');
  */
 
 // Instância global do serviço de health check
-let healthCheckService;
+const healthCheckService = global.healthCheckService;
 
 // Inicializar serviço se não existir
 if (!global.healthCheckService) {
