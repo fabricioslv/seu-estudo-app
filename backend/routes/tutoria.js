@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
-const { requireAuth } = require('../middleware/auth'); // Reutilizar o middleware de autenticação
+const { requireAuth } = require('../middleware/auth'); // Reutilizar o middleware de autentica????o
 
 // Rota para um aluno se tornar um tutor
 router.post('/tutores', requireAuth, async (req, res) => {
@@ -9,9 +9,9 @@ router.post('/tutores', requireAuth, async (req, res) => {
   const userId = req.user.id;
 
   if (!bio || !materias || !disponibilidade) {
-    return res
+    return re
       .status(400)
-      .json({ error: 'Bio, matérias e disponibilidade são obrigatórios.' });
+      .json({ error: 'Bio, mat??rias e disponibilidade s??o obrigat??rios.' });
   }
 
   try {
@@ -26,7 +26,7 @@ router.post('/tutores', requireAuth, async (req, res) => {
   }
 });
 
-// Rota para listar todos os tutores disponíveis
+// Rota para listar todos os tutores dispon??vei
 router.get('/tutores', async (req, res) => {
   try {
     const result = await db.query(
@@ -41,15 +41,15 @@ router.get('/tutores', async (req, res) => {
   }
 });
 
-// Rota para solicitar uma sessão de tutoria
+// Rota para solicitar uma sess??o de tutoria
 router.post('/sessoes', requireAuth, async (req, res) => {
   const { tutor_id, materia, horario_solicitado } = req.body;
   const aluno_id = req.user.id;
 
   if (!tutor_id || !materia || !horario_solicitado) {
-    return res
+    return re
       .status(400)
-      .json({ error: 'Tutor, matéria e horário são obrigatórios.' });
+      .json({ error: 'Tutor, mat??ria e hor??rio s??o obrigat??rios.' });
   }
 
   try {
@@ -57,15 +57,30 @@ router.post('/sessoes', requireAuth, async (req, res) => {
       'INSERT INTO sessoes_tutoria (tutor_id, aluno_id, materia, horario_solicitado) VALUES ($1, $2, $3, $4) RETURNING *',
       [tutor_id, aluno_id, materia, horario_solicitado]
     );
-    // TODO: Criar uma notificação para o tutor
+    
+    // Criar uma notifica????o para o tutor
+    try {
+      const notificationService = await import('../services/notificationService.js');
+      await notificationService.default.scheduleSmartNotification(
+        tutor_id,
+        'tutoria',
+        `Nova solicita????o de sess??o de tutoria`,
+        `Voc?? tem uma nova solicita????o de sess??o de tutoria do aluno ${req.user.nome}. Mat??ria: ${materia}`,
+        2 // prioridade normal
+      );
+    } catch (notificationError) {
+      console.error('Erro ao enviar notifica????o ao tutor:', notificationError);
+      // N??o interrompe o processo se a notifica????o falhar
+    }
+    
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error('Erro ao solicitar sessão:', error);
+    console.error('Erro ao solicitar sess??o:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
-// Rota para ver as sessões do usuário (como aluno ou tutor)
+// Rota para ver as sess??es do usu??rio (como aluno ou tutor)
 router.get('/sessoes', requireAuth, async (req, res) => {
   const userId = req.user.id;
   try {
@@ -75,19 +90,19 @@ router.get('/sessoes', requireAuth, async (req, res) => {
     );
     res.status(200).json(result.rows);
   } catch (error) {
-    console.error('Erro ao buscar sessões:', error);
+    console.error('Erro ao buscar sess??es:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
-// Rota para atualizar o status de uma sessão (aceitar/recusar/cancelar)
+// Rota para atualizar o status de uma sess??o (aceitar/recusar/cancelar)
 router.put('/sessoes/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
   const userId = req.user.id;
 
   if (!status) {
-    return res.status(400).json({ error: 'O novo status é obrigatório.' });
+    return res.status(400).json({ error: 'O novo status ?? obrigat??rio.' });
   }
 
   try {
@@ -98,13 +113,33 @@ router.put('/sessoes/:id', requireAuth, async (req, res) => {
     if (result.rowCount === 0) {
       return res.status(404).json({
         error:
-          'Sessão não encontrada ou você não tem permissão para alterá-la.',
+          'Sess??o n??o encontrada ou voc?? n??o tem permiss??o para alter??-la.',
       });
     }
-    // TODO: Notificar o outro usuário sobre a mudança de status
+    
+    // Notificar o outro usu??rio sobre a mudan??a de statu
+    try {
+      const notificationService = await import('../services/notificationService.js');
+      const session = result.rows[0]; // Pegar a sess??o atualizada do resultado
+      const otherUserId = userId === session.aluno_id ? session.tutor_id : session.aluno_id;
+      const userType = userId === session.aluno_id ? 'aluno' : 'tutor';
+      const currentUserType = userId === session.aluno_id ? 'tutor' : 'aluno';
+      
+      await notificationService.default.scheduleSmartNotification(
+        otherUserId,
+        'tutoria',
+        `Status da sess??o de tutoria atualizado`,
+        `O ${currentUserType} alterou o status da sess??o de tutoria para: ${status}.`,
+        2 // prioridade normal
+      );
+    } catch (notificationError) {
+      console.error('Erro ao enviar notifica????o sobre mudan??a de status:', notificationError);
+      // N??o interrompe o processo se a notifica????o falhar
+    }
+    
     res.status(200).json(result.rows[0]);
   } catch (error) {
-    console.error('Erro ao atualizar status da sessão:', error);
+    console.error('Erro ao atualizar status da sess??o:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
