@@ -939,4 +939,45 @@ router.post('/extract-local-files', async (req, res) => {
   }
 });
 
+// --- ROTA PARA ATUALIZAÇÕES DE QUESTÕES ---
+// Endpoint para buscar atualizações de questões para sincronização offline
+router.post('/atualizacoes', requireAuth, async (req, res) => {
+  try {
+    const { lastSync, userId } = req.body;
+    
+    // Validar entrada
+    if (!lastSync || !userId) {
+      return res.status(400).json({ 
+        error: 'Parâmetros lastSync e userId são obrigatórios' 
+      });
+    }
+    
+    // Converter lastSync para data
+    const lastSyncDate = new Date(lastSync);
+    
+    // Buscar questões modificadas desde a última sincronização
+    const query = `
+      SELECT * FROM questoes 
+      WHERE data_atualizacao > $1 
+      ORDER BY data_atualizacao DESC
+      LIMIT 100
+    `;
+    
+    const result = await db.query(query, [lastSyncDate]);
+    
+    res.json({
+      questoes: result.rows,
+      total: result.rows.length,
+      timestamp: new Date().toISOString(),
+      lastSync: lastSyncDate.toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Erro ao buscar atualizações de questões:', error);
+    res.status(500).json({ 
+      error: 'Erro ao buscar atualizações de questões' 
+    });
+  }
+});
+
 module.exports = router;

@@ -353,4 +353,47 @@ router.get('/ai/models', authMiddleware, async (req, res) => {
   }
 });
 
+// --- ROTA PARA ATUALIZAÇÕES DE LIVROS ---
+// Endpoint para buscar atualizações de livros para sincronização offline
+router.post('/atualizacoes', authMiddleware, async (req, res) => {
+  try {
+    const { lastSync } = req.body;
+    
+    // Validar entrada
+    if (!lastSync) {
+      return res.status(400).json({ 
+        error: 'Parâmetro lastSync é obrigatório' 
+      });
+    }
+    
+    // Converter lastSync para data
+    const lastSyncDate = new Date(lastSync);
+    
+    // Buscar livros modificados desde a última sincronização
+    const { data: livros, error } = await req.db
+      .from('livros')
+      .select('*')
+      .gt('updated_at', lastSyncDate.toISOString())
+      .order('updated_at', { ascending: false })
+      .limit(100);
+    
+    if (error) {
+      throw new Error(error.message);
+    }
+    
+    res.json({
+      livros,
+      total: livros.length,
+      timestamp: new Date().toISOString(),
+      lastSync: lastSyncDate.toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Erro ao buscar atualizações de livros:', error);
+    res.status(500).json({ 
+      error: 'Erro ao buscar atualizações de livros' 
+    });
+  }
+});
+
 module.exports = router;
