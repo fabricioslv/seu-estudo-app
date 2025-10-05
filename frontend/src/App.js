@@ -87,7 +87,7 @@ function App() {
               <Route path="/professor/simulados/criar" element={<PrivateRoute><ProfessorCreateSimuladoPage /></PrivateRoute>} />
             </Routes>
           </Suspense>
-        </main>
+        </main>`n        <SpeedInsights />
         <Footer />
       </div>
     </AuthProvider>
