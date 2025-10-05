@@ -153,6 +153,7 @@ class ProcessadorLivrosDidaticos {
       const conteudoExtraido = await livroDidaticoExtractor.extrairConteudo(
         filePath,
         metadata
+      );
 
       // Salvar conteúdo extraído em arquivo JSON para referência
       const jsonFileName = fileName.replace('.pdf', '.json');
@@ -314,6 +315,7 @@ class ProcessadorLivrosDidaticos {
             questao.area_conhecimento,
             questao.explicacao || '',
           ]
+        );
 
         questoesSalvas.push({
           ...questao,
@@ -365,6 +367,7 @@ class ProcessadorLivrosDidaticos {
               categorizacao.topico,
               questao.id,
             ]
+        );
 
         } catch (error) {
           console.error(
@@ -543,6 +546,7 @@ Taxa de sucesso: ${((resultados.processados / resultados.total) * 100).toFixed(2
       );
       this.logProcessamento(
         `Movendo ${pdfFiles.length} livros de volta para processamento`
+      );
 
       for (const fileName of pdfFiles) {
         const origemPath = path.join(this.processadosDir, fileName);
@@ -573,5 +577,4 @@ Taxa de sucesso: ${((resultados.processados / resultados.total) * 100).toFixed(2
 
 // Criar e exportar uma instância do processador
 module.exports = new ProcessadorLivrosDidaticos();
-
 

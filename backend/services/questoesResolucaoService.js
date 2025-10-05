@@ -42,7 +42,7 @@ class QuestoesResolucaoService {
         resposta,
         isCorreta,
         tempoResposta
-      );
+      ]);
 
       // Atualizar estatísticas do usuário
       const atividade = isCorreta ? 'acerto_questao' : 'resolucao_questao';
@@ -168,7 +168,7 @@ class QuestoesResolucaoService {
   async getHistoricoResolucoes(usuarioId, limit = 50, offset = 0) {
     try {
       const query = `
-        SELECT 
+        SELECT
           ru.id,
           ru.questao_id,
           q.enunciado,
@@ -205,7 +205,7 @@ class QuestoesResolucaoService {
   async getEstatisticasResolucoes(usuarioId) {
     try {
       const estatisticasQuery = `
-        SELECT 
+        SELECT
           COUNT(*) as total_respostas,
           SUM(CASE WHEN esta_correta = true THEN 1 ELSE 0 END) as acertos,
           SUM(CASE WHEN esta_correta = false THEN 1 ELSE 0 END) as erros,
@@ -216,13 +216,13 @@ class QuestoesResolucaoService {
       `;
 
       const materiasQuery = `
-        SELECT 
+        SELECT
           q.materia,
           COUNT(*) as total_respostas,
           SUM(CASE WHEN ru.esta_correta = true THEN 1 ELSE 0 END) as acertos,
           SUM(CASE WHEN ru.esta_correta = false THEN 1 ELSE 0 END) as erros,
           ROUND(
-            (SUM(CASE WHEN ru.esta_correta = true THEN 1 ELSE 0 END)::decimal / COUNT(*)) * 100, 
+            (SUM(CASE WHEN ru.esta_correta = true THEN 1 ELSE 0 END)::decimal / COUNT(*)) * 100,
             2
           ) as porcentagem_acerto
         FROM respostas_usuario ru
@@ -246,6 +246,7 @@ class QuestoesResolucaoService {
                 100
               ).toFixed(2)
             )
+          : 0;
 
       return {
         success: true,
@@ -269,5 +270,3 @@ class QuestoesResolucaoService {
 }
 
 module.exports = new QuestoesResolucaoService();
-
-

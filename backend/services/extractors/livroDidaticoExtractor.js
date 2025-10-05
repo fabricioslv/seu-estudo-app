@@ -264,15 +264,15 @@ class LivroDidaticoExtractor {
     // Padrão para encontrar ano no nome (ex: 6ano, 7_ano, ano6, etc.)
     const anoPattern = /(?:^|[_\s])(\d{1,2})(?:[_\s]?ano|ano[_\s]?)/i;
     const match = fileName.match(anoPattern);
-    
+
     if (match) {
       return parseInt(match[1]);
     }
-    
+
     // Tentar encontrar ano isolado
     const isolatedYearPattern = /(?:^|[_\s])(20[0-9]{2}|[0-9]{2})(?:[_\s]|$)/;
     const yearMatch = fileName.match(isolatedYearPattern);
-    
+
     if (yearMatch) {
       const year = parseInt(yearMatch[1]);
       if (year > 1950) return year; // Considera como ano se for > 1950
@@ -533,11 +533,11 @@ class LivroDidaticoExtractor {
       for (const elemento of pagina.elementos) {
         if (elemento.tipo === 'exercicio') {
           totalExercicios++;
-          
+
           // Verificar se o exercício é complexo com base em palavras-chave
           const palavrasComplexas = ['demonstrar', 'provar', 'analisar criticamente', 'elaborar', 'comparar', 'avaliar'];
           const conteudoLower = elemento.conteudo.toLowerCase();
-          
+
           if (palavrasComplexas.some(palavra => conteudoLower.includes(palavra))) {
             totalExerciciosComplexos++;
           }
@@ -546,9 +546,9 @@ class LivroDidaticoExtractor {
     }
 
     if (totalExercicios === 0) return 'media';
-    
+
     const proporcaoComplexos = totalExerciciosComplexos / totalExercicios;
-    
+
     if (proporcaoComplexos > 0.5) return 'alta';
     if (proporcaoComplexos > 0.2) return 'media';
     return 'baixa';

@@ -3,7 +3,7 @@ import fs from 'fs';
 import pdfjsLib from 'pdfjs-dist/legacy/build/pdf.js';
 import path from 'path';
 
-// Configuração para usar a versão de Node.js do pdfjs-dist
+// ConfiguraÃ§Ã£o para usar a versÃ£o de Node.js do pdfjs-dist
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`;
 
 class LayoutExtractor {
@@ -11,16 +11,16 @@ class LayoutExtractor {
     // Define patterns para diferentes tipos de exames
     this.examPatterns = {
       enem: {
-        // Padrões para identificar questões no ENEM
+        // PadrÃµes para identificar questÃµes no ENEM
         questaoPattern:
-          /(?:QUESTÃO|Questão|Questao|QUESTAO)\s*(?:n[º°]?\s*)?(\d{1,3})[.\s\n\r]*([A-Z\s\n\r][\s\S]*?)(?=(?:QUESTÃO|Questão|Questao|QUESTAO)\s*(?:n[º°]?\s*)?\d{1,3}|$)/gi,
+          /(?:QUESTO|QuestÃ£o|Questao|QUESTAO)\s*(?:n[ÂºÂ°]?\s*)?(\d{1,3})[.\s\n\r]*([A-Z\s\n\r][\s\S]*?)(?=(?:QUESTO|QuestÃ£o|Questao|QUESTAO)\s*(?:n[ÂºÂ°]?\s*)?\d{1,3}|$)/gi,
         alternativasPattern:
           /[.\s]([A-E])[).\s]+([A-Z][^A-E\n\r.(]*?)(?=\s*[.\s]([A-E])[).\s]|$)/gi,
         gabaritoPattern: /(\d{1,3})[.\s]+([A-E])/gi,
       },
       vestibular: {
         questaoPattern:
-          /(?:Questão|QUESTÃO|Questao|QUESTAO)\s*(?:n[º°]?\s*)?(\d{1,3})[.\s\n\r]*([A-Z\s\n\r][\s\S]*?)(?=(?:Questão|QUESTÃO|Questao|QUESTAO)\s*(?:n[º°]?\s*)?\d{1,3}|$)/gi,
+          /(?:QuestÃ£o|QUESTO|Questao|QUESTAO)\s*(?:n[ÂºÂ°]?\s*)?(\d{1,3})[.\s\n\r]*([A-Z\s\n\r][\s\S]*?)(?=(?:QuestÃ£o|QUESTO|Questao|QUESTAO)\s*(?:n[ÂºÂ°]?\s*)?\d{1,3}|$)/gi,
         alternativasPattern:
           /([A-E])[.).]\s*([A-Z][^A-E\n\r(]*?)(?=\s*([A-E])[.).]|$)|[.\s(]([A-E])[)\s]+([A-Z][^A-E\n\r(]*?)(?=\s*[.\s(][A-E][)\s]|$)/gi,
         gabaritoPattern: /(\d{1,3})[.\s]+([A-E])/gi,
@@ -29,9 +29,9 @@ class LayoutExtractor {
   }
 
   /**
-   * Método para extrair texto mantendo a informação de layout dos PDFs
+   * MÃ©todo para extrair texto mantendo a informaÃ§Ã£o de layout dos PDFs
    * @param {string} filePath - Caminho para o arquivo PDF
-   * @returns {Promise<Object>} - Objeto com o texto e informações de layout
+   * @returns {Promise<Object>} - Objeto com o texto e informaÃ§Ãµes de layout
    */
   async extractWithLayout(filePath) {
     try {
@@ -52,7 +52,7 @@ class LayoutExtractor {
         const content = await page.getTextContent();
         const viewport = page.getViewport({ scale: 1.5 });
 
-        // Obter informações de posicionamento para cada item de texto
+        // Obter informaÃ§Ãµes de posicionamento para cada item de texto
         const positionedTexts = content.items.map((item) => {
           return {
             str: item.str,
@@ -85,26 +85,26 @@ class LayoutExtractor {
   }
 
   /**
-   * Método principal para extrair questões com base no layout
+   * MÃ©todo principal para extrair questÃµes com base no layout
    * @param {string} provaPath - Caminho para o arquivo PDF da prova
    * @param {string} gabaritoPath - Caminho opcional para o arquivo PDF do gabarito
-   * @returns {Promise<Object>} - Questões extraídas
+   * @returns {Promise<Object>} - QuestÃµes extraÃ­das
    */
   async extract(provaPath, gabaritoPath = null) {
     try {
       console.log(
-        'Iniciando extração com layout para:',
+        'Iniciando extraÃ§Ã£o com layout para:',
         path.basename(provaPath)
       );
 
-      // Extrai o conteúdo com informações de layout
+      // Extrai o conteÃºdo com informaÃ§Ãµes de layout
       const layoutData = await this.extractWithLayout(provaPath);
 
       // Identificar o tipo de exame
       const examType = this.identifyExamType(provaPath);
       console.log(`Tipo de exame identificado: ${examType}`);
 
-      // Processar o texto de cada página para extrair questões
+      // Processar o texto de cada pÃ¡gina para extrair questÃµes
       const questoes = [];
 
       for (const page of layoutData.pages) {
@@ -112,9 +112,9 @@ class LayoutExtractor {
         questoes.push(...pageQuestoes);
       }
 
-      console.log(`Extraídas ${questoes.length} questões`);
+      console.log(`ExtraÃ­das ${questoes.length} questÃµes`);
 
-      // Extrair gabarito se disponível
+      // Extrair gabarito se disponÃ­vel
       let gabarito = null;
       if (gabaritoPath) {
         const gabaritoBuffer = fs.readFileSync(gabaritoPath);
@@ -125,7 +125,7 @@ class LayoutExtractor {
         gabarito = this.extractGabarito(gabaritoText);
       }
 
-      // Associar gabarito às questões se disponível
+      // Associar gabarito Ã s questÃµes se disponÃ­vel
       if (gabarito) {
         this.associateGabarito(questoes, gabarito);
       }
@@ -138,7 +138,7 @@ class LayoutExtractor {
         totalPages: layoutData.totalPages,
       };
     } catch (error) {
-      console.error('Erro na extração com layout:', error);
+      console.error('Erro na extraÃ§Ã£o com layout:', error);
       throw error;
     }
   }
@@ -169,10 +169,10 @@ class LayoutExtractor {
   }
 
   /**
-   * Extrair questões de uma página específica
-   * @param {Object} page - Objeto de página com layout
+   * Extrair questÃµes de uma pÃ¡gina especÃ­fica
+   * @param {Object} page - Objeto de pÃ¡gina com layout
    * @param {string} examType - Tipo de exame
-   * @returns {Array} - Questões extraídas da página
+   * @returns {Array} - QuestÃµes extraÃ­das da pÃ¡gina
    */
   extractQuestoesFromPage(page, examType) {
     const questoes = [];
@@ -218,7 +218,7 @@ class LayoutExtractor {
    */
   extractGabarito(text) {
     const gabarito = {};
-    const pattern = /(\d+)\s*[–\-:\s]+([A-E])/gi;
+    const pattern = /(\d+)\s*[â€“\-:\s]+([A-E])/gi;
     let match;
 
     while ((match = pattern.exec(text)) !== null) {
@@ -231,8 +231,8 @@ class LayoutExtractor {
   }
 
   /**
-   * Associar gabarito às questões
-   * @param {Array} questoes - Array de questões
+   * Associar gabarito Ã s questÃµes
+   * @param {Array} questoes - Array de questÃµes
    * @param {Object} gabarito - Objeto com gabarito
    */
   associateGabarito(questoes, gabarito) {
@@ -249,7 +249,7 @@ class LayoutExtractor {
    * @returns {number} - Ano do exame
    */
   extractAno(text) {
-    const anoPattern = /ENEM\s+(\d{4})|(\d{4})\s+—\s+Exame Nacional do Ensino Médio/i;
+    const anoPattern = /ENEM\s+(\d{4})|(\d{4})\s+â€”\s+Exame Nacional do Ensino MÃ©dio/i;
     const match = text.match(anoPattern);
     return match ? parseInt(match[1] || match[2]) : new Date().getFullYear();
   }
@@ -257,7 +257,7 @@ class LayoutExtractor {
   /**
    * Extrair texto de um PDF
    * @param {Object} pdf - Objeto PDF
-   * @returns {Promise<string>} - Texto extraído
+   * @returns {Promise<string>} - Texto extraÃ­do
    */
   async extractTextFromPDF(pdf) {
     let fullText = '';
@@ -273,24 +273,24 @@ class LayoutExtractor {
   }
 
   /**
-   * Determinar matéria de uma questão com base no número e enunciado
-   * @param {number} numero - Número da questão
-   * @param {string} enunciado - Enunciado da questão
-   * @returns {string} - Matéria determinada
+   * Determinar matÃ©ria de uma questÃ£o com base no nÃºmero e enunciado
+   * @param {number} numero - NÃºmero da questÃ£o
+   * @param {string} enunciado - Enunciado da questÃ£o
+   * @returns {string} - MatÃ©ria determinada
    */
   determinarMateria(numero, enunciado) {
-    // Primeiro tentar identificar pela posição (no caso do ENEM)
+    // Primeiro tentar identificar pela posiÃ§Ã£o (no caso do ENEM)
     if (numero >= 1 && numero <= 45) {
-      return 'Linguagens e Códigos';
+      return 'Linguagens e CÃ³digos';
     } else if (numero >= 46 && numero <= 90) {
-      return 'Ciências Humanas';
+      return 'CiÃªncias Humanas';
     } else if (numero >= 91 && numero <= 135) {
-      return 'Ciências da Natureza';
+      return 'CiÃªncias da Natureza';
     } else if (numero >= 136 && numero <= 180) {
-      return 'Matemática';
+      return 'MatemáticaÃ¡tica';
     }
 
-    // Se não for ENEM, tentar identificar pelo enunciado
+    // Se nÃ£o for ENEM, tentar identificar pelo enunciado
     const enunciadoLower = enunciado.toLowerCase();
 
     if (
@@ -298,80 +298,80 @@ class LayoutExtractor {
       enunciadoLower.includes('linguagem') ||
       enunciadoLower.includes('literatura')
     ) {
-      return 'Linguagens e Códigos';
+      return 'Linguagens e CÃ³digos';
     }
 
     if (
-      enunciadoLower.includes('história') ||
+      enunciadoLower.includes('histÃ³ria') ||
       enunciadoLower.includes('geografia') ||
       enunciadoLower.includes('sociologia') ||
       enunciadoLower.includes('filosofia')
     ) {
-      return 'Ciências Humanas';
+      return 'CiÃªncias Humanas';
     }
 
     if (
-      enunciadoLower.includes('física') ||
-      enunciadoLower.includes('química') ||
+      enunciadoLower.includes('fÃ­sica') ||
+      enunciadoLower.includes('quÃ­mica') ||
       enunciadoLower.includes('biologia')
     ) {
-      return 'Ciências da Natureza';
+      return 'CiÃªncias da Natureza';
     }
 
     if (
-      enunciadoLower.includes('matemática') ||
-      enunciadoLower.includes('equação') ||
+      enunciadoLower.includes('matemÃ¡tica') ||
+      enunciadoLower.includes('equaÃ§Ã£o') ||
       enunciadoLower.includes('geometria')
     ) {
-      return 'Matemática';
+      return 'MatemáticaÃ¡tica';
     }
 
-    return 'Não classificada';
+    return 'NÃ£o classificada';
   }
 
   /**
-   * Classificar conteúdo por matéria com base em palavras-chave
-   * @param {string} enunciado - Enunciado da questão
-   * @returns {string} - Matéria identificada
+   * Classificar conteÃºdo por matÃ©ria com base em palavras-chave
+   * @param {string} enunciado - Enunciado da questÃ£o
+   * @returns {string} - MatÃ©ria identificada
    */
   classifyByContent(enunciado) {
     const enunciadoLower = enunciado.toLowerCase();
 
     const materiaKeywords = {
-      'Linguagens e Códigos': [
+      'Linguagens e CÃ³digos': [
         'literatura',
         'linguagem',
-        'gramática',
-        'português',
+        'gramÃ¡tica',
+        'portuguÃªs',
         'texto',
         'autor',
         'obra',
         'figura de linguagem',
-        'função da linguagem',
+        'funÃ§Ã£o da linguagem',
       ],
-      'Ciências Humanas': [
-        'história',
+      'CiÃªncias Humanas': [
+        'histÃ³ria',
         'geografia',
         'sociologia',
         'filosofia',
-        'política',
+        'polÃ­tica',
         'sociedade',
         'cultura',
         'economia',
-        'revolução',
-        'colonização',
+        'revoluÃ§Ã£o',
+        'colonizaÃ§Ã£o',
         'brasil',
         'imperialismo',
-        'globalização',
+        'globalizaÃ§Ã£o',
       ],
-      'Ciências da Natureza': [
-        'física',
-        'química',
+      'CiÃªncias da Natureza': [
+        'fÃ­sica',
+        'quÃ­mica',
         'biologia',
-        'átomo',
-        'reação',
-        'célula',
-        'força',
+        'Ã¡tomo',
+        'reaÃ§Ã£o',
+        'cÃ©lula',
+        'forÃ§a',
         'energia',
         'carbono',
         'dna',
@@ -392,8 +392,8 @@ class LayoutExtractor {
         'cultura',
         'classe',
         'social',
-        'política',
-        'instituição',
+        'polÃ­tica',
+        'instituiÃ§Ã£o',
         'poder',
         'marx',
         'durban',
@@ -403,7 +403,7 @@ class LayoutExtractor {
       ],
     };
 
-    // Verificar cada matéria
+    // Verificar cada matÃ©ria
     for (const [materia, keywords] of Object.entries(materiaKeywords)) {
       for (const keyword of keywords) {
         if (enunciadoLower.includes(keyword.toLowerCase())) {
@@ -412,7 +412,7 @@ class LayoutExtractor {
       }
     }
 
-    return 'Não classificada';
+    return 'NÃ£o classificada';
   }
 }
 

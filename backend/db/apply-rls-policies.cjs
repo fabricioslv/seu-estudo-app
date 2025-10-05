@@ -103,11 +103,16 @@ async function applyRLSPolicies() {
     // Verificar se hÃ¡ tabelas ainda vulnerÃ¡veis
     const vulnerableTables = rlsStatus.rows.filter(row => !row.rls_enabled);
 
+    // DIAGNÓSTICO: Verificar caracteres problemáticos na linha 110
+    console.log('[DEBUG] Diagnosticando caracteres especiais na linha 110...');
+    console.log(`[DEBUG] Caracteres encontrados na linha 110: ${JSON.stringify(vulnerableTables.length)}`);
+    console.log(`[DEBUG] Encoding do arquivo: ${fs.readFileSync(__filename, 'utf8').includes('âš') ? 'UTF-8 com caracteres malformados' : 'UTF-8 correto'}`);
+
     if (vulnerableTables.length === 0) {
       console.log('ðŸŽ‰ TODAS AS TABELAS ESTÃƒO PROTEGIDAS COM RLS!');
       console.log('âœ… Vulnerabilidades crÃ­ticas corrigidas com sucesso!');
     } else {
-      console.log(`âš ï¸  ${vulnerableTables.length} tabelas ainda vulnerÃ¡veis:`);
+      console.log(`⚠️  ${vulnerableTables.length} tabelas ainda vulneráveis:`);
       vulnerableTables.forEach(table => {
         console.log(`   âŒ ${table.tablename}`);
       });

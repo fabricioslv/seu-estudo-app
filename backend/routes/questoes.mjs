@@ -875,7 +875,7 @@ router.get('/test/:tipo', (req, res) => {
     });
   } catch (err) {
     console.error('Erro ao obter teste:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
@@ -900,7 +900,7 @@ router.post('/test/:tipo/process', async (req, res) => {
     });
   } catch (err) {
     console.error('Erro ao processar teste:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 

@@ -163,6 +163,7 @@ class EnhancedExtractor {
             layoutError.message
           );
         }
+      }
 
       // Associate answers from the answer key to the questions
       if (gabarito && Object.keys(gabarito).length > 0 && questoes.length > 0) {
@@ -203,11 +204,9 @@ class EnhancedExtractor {
         // Normalize line breaks
         .replace(/\r\n/g, '\n')
         .replace(/\r/g, '\n')
-        // Replace multiple consecutive line breaks with single break
+        // Remove excessive newlines
         .replace(/\n{3,}/g, '\n\n')
-        // Remove page numbers and headers/footers that might contain page indicators
-        .replace(/\n\d+\n/g, '\n')
-        // Clean up specific PDF artifacts
+        // Trim whitespace
         .trim()
     );
   }
@@ -273,6 +272,7 @@ class EnhancedExtractor {
     const questaoPattern = new RegExp(
       patterns.questaoPattern.source,
       patterns.questaoPattern.flags
+    );
 
     while ((match = questaoPattern.exec(text)) !== null) {
       const numeroStr = match[1];
@@ -386,6 +386,8 @@ class EnhancedExtractor {
               /^(?:Questão|QUESTÃO|Questao|QUESTAO)?\s*(?:n[º°]?\s*)?\d{1,3}[\.\)]?/i
             )
           ) {
+            break;
+          }
 
           j++;
         }
@@ -814,6 +816,7 @@ class EnhancedExtractor {
         'movimento social',
         'trabalho',
       ],
+    };
 
     // Check each subject
     for (const [materia, keywords] of Object.entries(materiaKeywords)) {
@@ -878,6 +881,7 @@ class EnhancedExtractor {
       'relacionar',
       'justificar',
       'argumentar',
+    ];
 
     for (const word of words) {
       if (complexTerms.some((term) => word.toLowerCase().includes(term))) {
@@ -898,7 +902,52 @@ class EnhancedExtractor {
    * @param {Array} questoes - Array of questions
    * @returns {Object} - Validation object
    */
-  validateExtraction(questoes) {}
+  validateExtraction(questoes) {
+    const validation = {
+      totalQuestoes: questoes.length,
+      questoesComResposta: 0,
+      questoesSemResposta: 0,
+      materias: new Set(),
+      anos: new Set(),
+      validas: 0,
+      invalidas: 0,
+    };
+
+    for (const questao of questoes) {
+      // Count questions with/without answers
+      if (questao.resposta_correta) {
+        validation.questoesComResposta++;
+      } else {
+        validation.questoesSemResposta++;
+      }
+
+      // Track subjects and years
+      if (questao.materia) {
+        validation.materias.add(questao.materia);
+      }
+
+      if (questao.ano) {
+        validation.anos.add(questao.ano);
+      }
+
+      // Validate question content
+      if (
+        questao.enunciado &&
+        questao.enunciado.trim().length > 0 &&
+        Object.keys(questao.alternativas).length >= 2
+      ) {
+        validation.validas++;
+      } else {
+        validation.invalidas++;
+      }
+    }
+
+    // Convert Sets to arrays for easier handling
+    validation.materias = Array.from(validation.materias);
+    validation.anos = Array.from(validation.anos).sort();
+
+    return validation;
+  }
 
   /**
    * Complementar as questões extraídas com dados da API do ENEM
@@ -922,6 +971,7 @@ class EnhancedExtractor {
 
     console.log(
       `Complementando ${questoes.length} questões do ENEM ${ano} com dados da API...`
+    );
 
     try {
       // Obter todas as questões do ano da API
@@ -1003,6 +1053,7 @@ class EnhancedExtractor {
     // Tentar inferir do ano extraído de uma questão
     const questaoComAno = questoes.find(
       (q) => q.ano && q.ano >= 2009 && q.ano <= new Date().getFullYear()
+    );
 
     if (questaoComAno && questaoComAno.ano) {
       return questaoComAno.ano;
@@ -1011,59 +1062,6 @@ class EnhancedExtractor {
     // Se não encontrar ano nas questões, retornar null
     return null;
   }
-
-  /**
-   * Validate the extraction results
-   * @param {Array} questoes - Array of questions
-   * @returns {Object} - Validation object
-   */
-  validateExtraction(questoes) {
-    const validation = {
-      totalQuestoes: questoes.length,
-      questoesComResposta: 0,
-      questoesSemResposta: 0,
-      materias: new Set(),
-      anos: new Set(),
-      validas: 0,
-      invalidas: 0,
-    };
-
-    for (const questao of questoes) {
-      // Count questions with/without answers
-      if (questao.resposta_correta) {
-        validation.questoesComResposta++;
-      } else {
-        validation.questoesSemResposta++;
-      }
-
-      // Track subjects and years
-      if (questao.materia) {
-        validation.materias.add(questao.materia);
-      }
-
-      if (questao.ano) {
-        validation.anos.add(questao.ano);
-      }
-
-      // Validate question content
-      if (
-        questao.enunciado &&
-        questao.enunciado.trim().length > 0 &&
-        Object.keys(questao.alternativas).length >= 2
-      ) {
-        validation.validas++;
-      } else {
-        validation.invalidas++;
-      }
-    }
-
-    // Convert Sets to arrays for easier handling
-    validation.materias = Array.from(validation.materias);
-    validation.anos = Array.from(validation.anos).sort();
-
-    return validation;
-  }
 }
 
 export default new EnhancedExtractor();
-

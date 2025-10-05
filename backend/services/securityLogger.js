@@ -3,7 +3,7 @@ const winston = require('winston');
 const fs = require('fs');
 const path = require('path');
 
-// ConfiguraÃ§Ã£o do logger de seguranÃ§a
+// ConfiguraÃƒÂ§ÃƒÂ£o do logger de seguranÃƒÂ§a
 const securityLogger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
@@ -31,7 +31,7 @@ if (process.env.NODE_ENV !== 'production') {
   );
 }
 
-// PadrÃµes de detecÃ§Ã£o de ameaÃ§as
+// PadrÃƒÂµes de detecÃƒÂ§ÃƒÂ£o de ameaÃƒÂ§as
 const threatPatterns = {
   xss: [
     /<script[^>]*>.*?<\/script>/gi,
@@ -42,15 +42,15 @@ const threatPatterns = {
   ],
   pathTraversal: [/(\.\.[/\\]+)/g, /\.\.%2f/gi, /\.\.%5c/gi, /%2e%2e/gi],
   commandInjection: [
-    /(\||;|&|\$\(|\`)/g,
+    /(\||;|&|\$\(|`)/g,
     /(rm\s|del\s|format\s|shutdown\s)/gi,
     /(\.\.(\/|\\))/g,
   ],
 };
 
 /**
- * FunÃ§Ã£o para registrar atividades de seguranÃ§a
- * @param {string} level - NÃ­vel do log (info, warn, error)
+ * FunÃƒÂ§ÃƒÂ£o para registrar atividades de seguranÃƒÂ§a
+ * @param {string} level - NÃƒÂ­vel do log (info, warn, error)
  * @param {string} message - Mensagem do log
  * @param {Object} meta - Metadados adicionais
  */
@@ -60,34 +60,34 @@ function logSecurity(level, message, meta = {}) {
 
 /**
  * Detectar tentativas de XSS
- * @param {string} input - Entrada do usuÃ¡rio
+ * @param {string} input - Entrada do usuÃƒÂ¡rio
  * @returns {boolean} - True se detectado XSS
  */
 function detectXSS(input) {
   if (typeof input !== 'string') return false;
-  
+
   return threatPatterns.xss.some(pattern => pattern.test(input));
 }
 
 /**
  * Detectar tentativas de Path Traversal
- * @param {string} input - Entrada do usuÃ¡rio
+ * @param {string} input - Entrada do usuÃƒÂ¡rio
  * @returns {boolean} - True se detectado Path Traversal
  */
 function detectPathTraversal(input) {
   if (typeof input !== 'string') return false;
-  
+
   return threatPatterns.pathTraversal.some(pattern => pattern.test(input));
 }
 
 /**
  * Detectar tentativas de Command Injection
- * @param {string} input - Entrada do usuÃ¡rio
+ * @param {string} input - Entrada do usuÃƒÂ¡rio
  * @returns {boolean} - True se detectado Command Injection
  */
 function detectCommandInjection(input) {
   if (typeof input !== 'string') return false;
-  
+
   return threatPatterns.commandInjection.some(pattern => pattern.test(input));
 }
 

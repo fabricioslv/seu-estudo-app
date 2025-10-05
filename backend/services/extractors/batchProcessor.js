@@ -16,13 +16,13 @@ class BatchProcessor {
       // Validate directories exist
       if (!fs.existsSync(this.examDirectory)) {
         throw new Error(
-          `Diretório de provas não encontrado: ${this.examDirectory}`
+          `DiretÃ³rio de provas nÃ£o encontrado: ${this.examDirectory}`
         );
       }
 
       if (!fs.existsSync(this.gabaritoDirectory)) {
         console.warn(
-          `Diretório de gabaritos não encontrado: ${this.gabaritoDirectory}. Continuando sem gabaritos.`
+          `DiretÃ³rio de gabaritos nÃ£o encontrado: ${this.gabaritoDirectory}. Continuando sem gabaritos.`
         );
       }
 
@@ -67,7 +67,7 @@ class BatchProcessor {
           });
 
           console.log(
-            `Extração concluída para: ${examFile}. Encontradas ${extractionResult.questoes.length} questões.`
+            `ExtraÃ§Ã£o concluÃ­da para: ${examFile}. Encontradas ${extractionResult.questoes.length} questÃµes.`
           );
         } catch (error) {
           console.error(`Erro ao processar ${examFile}:`, error.message);
@@ -81,7 +81,7 @@ class BatchProcessor {
       }
 
       console.log(
-        `Processamento em massa concluído. Processados ${results.length} arquivos.`
+        `Processamento em massa concluÃ­do. Processados ${results.length} arquivos.`
       );
       return results;
     } catch (error) {
@@ -123,6 +123,7 @@ class BatchProcessor {
     const examBaseName = examFileName.replace(
       /_pv_impresso_|_dia_|_caderno_|_dia\d_|_cad\d_/gi,
       '_'
+    );
 
     const gabaritoFiles = fs.readdirSync(this.gabaritoDirectory);
 
@@ -162,27 +163,25 @@ class BatchProcessor {
       // Check if the year part matches
       const examYearMatch = examFileName.match(/20\d{2}/);
       const gabaritoYearMatch = gabaritoName.match(/20\d{2}/);
-
-        examYearMatch &&
+      if (
         gabaritoYearMatch &&
         examYearMatch[0] === gabaritoYearMatch[0]
       ) {
         // Also check if the type (D1/D2, CD1/CD5) matches
-        const examTypeMatch = examFileName.match(/(d[12]|cd\d+)/i);
+        const examTypeMatch = examFileName.match(/(d[12]|cd\\\\d+)/i);
         const gabaritoTypeMatch = gabaritoName.match(
-          /(d[12]|cd\d+|azul|amarelo|cinza|rosa)/i
+          /(d[12]|cd\\\\d+|azul|amarelo|cinza|rosa)/i
+        );
 
-        if (examTypeMatch && gabaritoTypeMatch) {
-          if (
+        if (
             examTypeMatch[0].toLowerCase() ===
             gabaritoTypeMatch[0].toLowerCase()
           ) {
             console.log(
-              `Gabarito correspondente encontrado para ${examFile} (por padrão ano/tipo): ${gabaritoFile}`
+              `Gabarito correspondente encontrado para ${examFile} (por padrÃ£o ano/tipo): ${gabaritoFile}`
             );
             return gabaritoFile;
-          }
-        } else {
+          } else {
           // If type doesn't match but year does, return it as a possibility
           console.log(
             `Gabarito correspondente encontrado para ${examFile} (por ano): ${gabaritoFile}`
@@ -202,7 +201,7 @@ class BatchProcessor {
     results.forEach((result) => {
       if (result.status === 'success' && result.questoes) {
         result.questoes.forEach((questao) => {
-          const materia = questao.materia || 'Não classificada';
+          const materia = questao.materia || 'NÃ£o classificada';
           if (!grouped[materia]) {
             grouped[materia] = [];
           }
@@ -244,7 +243,7 @@ class BatchProcessor {
 
         // Group by subject
         result.questoes.forEach((questao) => {
-          const materia = questao.materia || 'Não classificada';
+          const materia = questao.materia || 'NÃ£o classificada';
           stats.questoesPorMateria[materia] =
             (stats.questoesPorMateria[materia] || 0) + 1;
 
@@ -311,12 +310,12 @@ class BatchProcessor {
         if (result.questoes.length === 0) {
           qualityReport.qualityIssues.push({
             fileName: result.fileName,
-            issue: 'Nenhuma questão extraída',
+            issue: 'Nenhuma questÃ£o extraÃ­da',
           });
         } else if (result.questoes.length < 10) {
           qualityReport.qualityIssues.push({
             fileName: result.fileName,
-            issue: `Poucas questões extraídas (${result.questoes.length})`,
+            issue: `Poucas questÃµes extraÃ­das (${result.questoes.length})`,
           });
         }
 
@@ -331,7 +330,7 @@ class BatchProcessor {
         if (emptyQuestions.length > 0) {
           qualityReport.qualityIssues.push({
             fileName: result.fileName,
-            issue: `${emptyQuestions.length} questões com conteúdo incompleto`,
+            issue: `${emptyQuestions.length} questÃµes com conteÃºdo incompleto`,
           });
         }
       });

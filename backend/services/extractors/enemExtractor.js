@@ -43,16 +43,16 @@ class EnemExtractor {
 
     while ((match = questaoPattern.exec(text)) !== null) {
       const [_, numero, conteudo] = match;
-      
+
       // Extrair enunciado (antes das alternativas)
       const enunciadoMatch = conteudo.match(/^(.*?)(?=(?:\n\s*[A-E]\s*:?\s*)|$)/s);
       const enunciado = enunciadoMatch ? enunciadoMatch[1].trim() : conteudo.trim();
-      
+
       // Extrair alternativas
       const alternativas = {};
       const alternativasPattern = /\n\s*([A-E])\s*:?\s*([^\n]*?(?=\n[A-E]|$))/g;
       let altMatch;
-      
+
       while ((altMatch = alternativasPattern.exec(conteudo)) !== null) {
         alternativas[altMatch[1]] = altMatch[2].trim();
       }
